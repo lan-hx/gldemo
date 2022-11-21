@@ -1,0 +1,18 @@
+ # for visual studio
+/.vs
+/out
+/CMakeSettings.json
+
+# for clion
+/.idea
+/cmake-build-*
+
+# for vscode
+/build
+/.vscode
+
+# for Qt Creator
+/build-*
+CMakeLists.txt.user
+
+/vcpkg
