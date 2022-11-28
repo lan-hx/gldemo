@@ -13,7 +13,7 @@ QMatrix4x4 GLCamera::GetViewMatrix() const {
 }
 
 void GLCamera::Update() {
-  front_ = {cosf(yaw_) * cosf(pitch_), sinf(pitch_), sinf(yaw_) * cosf(pitch_)};
+  front_ = {cosf(yaw_) * cosf(pitch_), sinf(pitch_), cosf(pitch_) * sinf(yaw_)};
   front_.normalize();
   right_ = QVector3D::crossProduct(front_, world_up_).normalized();
   up_ = QVector3D::crossProduct(right_, front_).normalized();
@@ -36,6 +36,7 @@ void GLCamera::KeyboardCallback(Qt::Key key, float time_elapsed) {
       break;
     default:;
   }
+  emit ValueChanged();
 }
 
 void GLCamera::MouseCallback(float xoffset, float yoffset, float scroll_offset, float time_elapsed) {
@@ -58,4 +59,5 @@ void GLCamera::MouseCallback(float xoffset, float yoffset, float scroll_offset, 
   }
 
   Update();
+  emit ValueChanged();
 }

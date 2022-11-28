@@ -7,6 +7,7 @@
 #include <queue>
 
 #include "UI/about/about.h"
+#include "UI/camera/camerasettings.h"
 #include "ui_mainwindow.h"
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow) {
@@ -26,6 +27,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
   setCentralWidget(main_gl_);
   main_gl_->setFixedSize(800, 600);
   adjustSize();
+  setFixedSize(width(), height());
 
   connect(main_gl_, &MainGLWindow::UpdateInfo, [&](int64_t nsec, const char *debug_info) {
     static std::deque<int64_t> fps_indecator;
@@ -37,6 +39,11 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
       fps_indecator.clear();
     }
     frame_latency_->setText("latency: " + QString::number(nsec / 1e6, 'f', 2) + "ms");
+  });
+
+  connect(ui->actioncamera, &QAction::triggered, [&]() {
+    auto s = new CameraSettings(main_gl_->camera_, this);
+    s->show();
   });
 
   // connect(ui->actionproject_info, &QAction::triggered, [&]() {

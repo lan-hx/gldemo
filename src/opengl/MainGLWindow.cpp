@@ -92,7 +92,9 @@ void MainGLWindow::initializeGL() {
   // 1. bind VAO
   delete vao_;
   vao_ = new QOpenGLVertexArrayObject;
-  if (vao_->create()) vao_->bind();
+  if (vao_->create()) {
+    vao_->bind();
+  }
 
   program_->bind();
 
@@ -165,7 +167,7 @@ void MainGLWindow::paintGL() {
   ++num;
   // qDebug() << num << ' ' << QDateTime::currentMSecsSinceEpoch();
   time_elapsed_ = time_.nsecsElapsed();
-  emit UpdateInfo(time_elapsed_, (QString("frame %1 position (%2, %3, %4) yaw %5 pitch %6")
+  emit UpdateInfo(time_elapsed_, (QString("frame %1 position (%2, %3, %4) pitch %5 yaw %6")
                                       .arg(num)
                                       .arg(camera_->GetPosition().x())
                                       .arg(camera_->GetPosition().y())
@@ -187,8 +189,10 @@ void MainGLWindow::paintGL() {
   } else {
     mouse_delta = {0, 0};
   }
-  camera_->MouseCallback(mouse_delta.x(), mouse_delta.y(), mouse_scroll_delta_, time_elapsed_ / 1e9);
-  mouse_scroll_delta_ = 0;
+  if (mouse_is_pressed_ || mouse_scroll_delta_ != 0) {
+    camera_->MouseCallback(mouse_delta.x(), mouse_delta.y(), mouse_scroll_delta_, time_elapsed_ / 1e9);
+    mouse_scroll_delta_ = 0;
+  }
 
   // clear
   f->glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
@@ -256,7 +260,7 @@ void MainGLWindow::mouseMoveEvent(QMouseEvent *event) { mouse_pos_ = event->pos(
 
 void MainGLWindow::wheelEvent(QWheelEvent *event) { mouse_scroll_delta_ += event->angleDelta().y(); }
 void MainGLWindow::mousePressEvent(QMouseEvent *event) {
-  if (event->buttons() & Qt::LeftButton) {
+  if ((event->buttons() & Qt::LeftButton) != 0) {
     mouse_is_pressed_ = true;
     mouse_last_pos_ = event->pos();
     mouse_pos_ = event->pos();

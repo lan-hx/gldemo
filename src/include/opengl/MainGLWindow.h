@@ -16,8 +16,12 @@
 
 #include "camera/GLCamera.h"
 
+class MainWindow;
+
 class MainGLWindow : public QOpenGLWidget, public QOpenGLExtraFunctions {
   Q_OBJECT
+
+  friend class MainWindow;
 
  public:
   explicit MainGLWindow(QWidget *parent = nullptr);
