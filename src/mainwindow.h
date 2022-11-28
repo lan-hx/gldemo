@@ -1,7 +1,6 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <QKeyEvent>
 #include <QLabel>
 #include <QMainWindow>
 
@@ -29,12 +28,9 @@ class MainWindow : public QMainWindow {
 
  protected:
   void keyPressEvent(QKeyEvent *event) override;
-  void keyReleaseEvent(QKeyEvent *event) override;
   void paintEvent(QPaintEvent *event) override;
 
  signals:
-  void Pause();
-  void SendKey(QKeyEvent *event, bool is_pressed);
 };
 
 #endif  // MAINWINDOW_H

@@ -4,6 +4,7 @@
 
 #include "opengl/MainGLWindow.h"
 
+#include <QKeyEvent>
 #include <QTime>
 
 #include "fs1_frag.h"
@@ -54,7 +55,8 @@ QByteArray VersionedShaderCode(const char *src) {
   return versioned_src;
 }
 
-MainGLWindow::MainGLWindow(QWidget *parent) {}
+MainGLWindow::MainGLWindow(QWidget *parent) : QOpenGLWidget(parent) { setFocusPolicy(Qt::StrongFocus); }
+
 MainGLWindow::~MainGLWindow() {
   makeCurrent();
   delete texture_;
@@ -65,6 +67,9 @@ MainGLWindow::~MainGLWindow() {
 }
 
 void MainGLWindow::initializeGL() {
+  // camera init
+  camera_ = new GLCamera({0.0f, 0.0f, 3.0f});
+
   // the same as glad init
   QOpenGLFunctions *f = QOpenGLContext::currentContext()->functions();
 
@@ -151,17 +156,40 @@ void MainGLWindow::initializeGL() {
   // program_->setUniformValue("ourTexture", 0);
 }
 
-QVector3D camera_pos = QVector3D(0.0f, 0.0f, 3.0f);
-QVector3D camera_front = QVector3D(0.0f, 0.0f, -1.0f);
-QVector3D camera_up = QVector3D(0.0f, 1.0f, 0.0f);
-
+// QVector3D camera_pos = QVector3D(0.0f, 0.0f, 3.0f);
+// QVector3D camera_front = QVector3D(0.0f, 0.0f, -1.0f);
+// QVector3D camera_up = QVector3D(0.0f, 1.0f, 0.0f);
+//
 void MainGLWindow::paintGL() {
   static int num = 0;
-  qDebug() << num++ << ' ' << QDateTime::currentMSecsSinceEpoch();
-  emit UpdateInfo(time_.nsecsElapsed(), (QStringLiteral("frame ") + QString::number(num)).toUtf8());
+  ++num;
+  // qDebug() << num << ' ' << QDateTime::currentMSecsSinceEpoch();
+  time_elapsed_ = time_.nsecsElapsed();
+  emit UpdateInfo(time_elapsed_, (QString("frame %1 position (%2, %3, %4) yaw %5 pitch %6")
+                                      .arg(num)
+                                      .arg(camera_->GetPosition().x())
+                                      .arg(camera_->GetPosition().y())
+                                      .arg(camera_->GetPosition().z())
+                                      .arg(camera_->GetAngles().x())
+                                      .arg(camera_->GetAngles().y()))
+                                     .toUtf8());
   time_.restart();
 
   QOpenGLExtraFunctions *f = QOpenGLContext::currentContext()->extraFunctions();
+
+  // process io
+  for (auto &key : keys_) {
+    camera_->KeyboardCallback(key, time_elapsed_ / 1e9);
+  }
+  auto mouse_delta = mouse_pos_ - mouse_last_pos_;
+  if (mouse_is_pressed_) {
+    mouse_last_pos_ = mouse_pos_;
+  } else {
+    mouse_delta = {0, 0};
+  }
+  camera_->MouseCallback(mouse_delta.x(), mouse_delta.y(), mouse_scroll_delta_, time_elapsed_ / 1e9);
+  mouse_scroll_delta_ = 0;
+
   // clear
   f->glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
   f->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -175,9 +203,13 @@ void MainGLWindow::paintGL() {
   texture_->bind();
 
   // view
-  view_.setToIdentity();
-  view_.lookAt(camera_pos, camera_pos + camera_front, camera_up);
-  program_->setUniformValue("view", view_);
+  program_->setUniformValue("view", camera_->GetViewMatrix());
+
+  // projection
+  projection_.setToIdentity();
+  projection_.perspective(camera_->GetFOV(), static_cast<float>(width()) / height(), 0.1f, 100.0f);
+  program_->setUniformValue("projection", projection_);
+  update();
 
   // draw
   vao_->bind();
@@ -201,4 +233,37 @@ void MainGLWindow::resizeGL(int w, int h) {
   projection_.perspective(45.0f, static_cast<float>(w) / h, 0.1f, 100.0f);
   program_->setUniformValue("projection", projection_);
   update();
+}
+void MainGLWindow::keyPressEvent(QKeyEvent *event) {
+  auto key = event->key();
+  if (key == Qt::Key_W || key == Qt::Key_S || key == Qt::Key_A || key == Qt::Key_D) {
+    keys_.emplace(static_cast<Qt::Key>(key));
+  } else {
+    event->ignore();
+  }
+}
+
+void MainGLWindow::keyReleaseEvent(QKeyEvent *event) {
+  auto key = event->key();
+  if (key == Qt::Key_W || key == Qt::Key_S || key == Qt::Key_A || key == Qt::Key_D) {
+    keys_.erase(static_cast<Qt::Key>(key));
+  } else {
+    event->ignore();
+  }
+}
+
+void MainGLWindow::mouseMoveEvent(QMouseEvent *event) { mouse_pos_ = event->pos(); }
+
+void MainGLWindow::wheelEvent(QWheelEvent *event) { mouse_scroll_delta_ += event->angleDelta().y(); }
+void MainGLWindow::mousePressEvent(QMouseEvent *event) {
+  if (event->buttons() & Qt::LeftButton) {
+    mouse_is_pressed_ = true;
+    mouse_last_pos_ = event->pos();
+    mouse_pos_ = event->pos();
+  }
+}
+void MainGLWindow::mouseReleaseEvent(QMouseEvent *event) {
+  if ((event->buttons() & Qt::LeftButton) == 0) {
+    mouse_is_pressed_ = false;
+  }
 }

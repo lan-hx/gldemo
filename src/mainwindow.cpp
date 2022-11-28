@@ -1,8 +1,9 @@
 #include "mainwindow.h"
 
-#include <QFileDialog>
-#include <QMessageBox>
-#include <QMovie>
+//#include <QFileDialog>
+//#include <QMessageBox>
+//#include <QMovie>
+#include <QKeyEvent>
 #include <queue>
 
 #include "UI/about/about.h"
@@ -52,21 +53,10 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 }
 
 MainWindow::~MainWindow() { delete ui; }
+void MainWindow::paintEvent(QPaintEvent *event) { main_gl_->update(); }
 void MainWindow::keyPressEvent(QKeyEvent *event) {
   auto key = event->key();
-  switch (key) {
-    case Qt::Key_P:
-      emit Pause();
-      break;
-    default:
-      emit SendKey(event, true);
+  if (key == Qt::Key_Q) {
+    close();
   }
 }
-void MainWindow::keyReleaseEvent(QKeyEvent *event) {
-  auto key = event->key();
-  switch (key) {
-    default:
-      emit SendKey(event, false);
-  }
-}
-void MainWindow::paintEvent(QPaintEvent *event) { main_gl_->update(); }

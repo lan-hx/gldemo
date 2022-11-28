@@ -12,6 +12,9 @@
 #include <QtOpenGL/QOpenGLShaderProgram>
 #include <QtOpenGL/QOpenGLVertexArrayObject>
 #include <QtOpenGLWidgets/QOpenGLWidget>
+#include <set>
+
+#include "camera/GLCamera.h"
 
 class MainGLWindow : public QOpenGLWidget, public QOpenGLExtraFunctions {
   Q_OBJECT
@@ -24,6 +27,14 @@ class MainGLWindow : public QOpenGLWidget, public QOpenGLExtraFunctions {
   void initializeGL() override;
   void paintGL() override;
   void resizeGL(int w, int h) override;
+
+ protected:
+  void keyPressEvent(QKeyEvent *event) override;
+  void keyReleaseEvent(QKeyEvent *event) override;
+  void mousePressEvent(QMouseEvent *event) override;
+  void mouseReleaseEvent(QMouseEvent *event) override;
+  void mouseMoveEvent(QMouseEvent *event) override;
+  void wheelEvent(QWheelEvent *event) override;
 
  private:
   QOpenGLVertexArrayObject *vao_ =
@@ -41,8 +52,21 @@ class MainGLWindow : public QOpenGLWidget, public QOpenGLExtraFunctions {
 
   QElapsedTimer time_;
 
+  int64_t time_elapsed_;  // in ns
+
+  // camera
+  GLCamera *camera_ = nullptr;
+
+  // io
+  std::set<Qt::Key> keys_{};
+  bool mouse_is_pressed_ = false;
+  QPoint mouse_last_pos_{0, 0}, mouse_pos_{0, 0};
+  float mouse_scroll_delta_ = 0;
+
  signals:
-  void UpdateInfo(int64_t nsec, const char *debug_info);  // NOLINT
+  void UpdateInfo(int64_t nsec, const char *debug_info);             // NOLINT
+  void SendKey(Qt::Key key, float time_elapsed);                     // NOLINT
+  void SendMouse(float xoffset, float yoffset, float time_elapsed);  // NOLINT
 };
 
 #endif  // GLDEMO_SRC_INCLUDE_OPENGL_MAINGLWINDOW_H_
