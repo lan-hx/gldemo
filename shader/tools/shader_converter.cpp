@@ -22,7 +22,7 @@ void out( const char* format, ...) {
 //#ifndef NDEBUG
 //  printf(printBuffer);
 //#endif
-  fprintf(fp_out, printBuffer);
+  fprintf(fp_out, "%s", printBuffer);
 }
 void write_file_header() {
   out("#ifndef  TXT_HEADER_%s\n", array_name.c_str());

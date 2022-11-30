@@ -3,25 +3,16 @@ cmake_minimum_required(VERSION 3.13)
 # Update qt variables
 message("QT_PREFIX_DIR: ${QT_PREFIX_DIR}")
 list(APPEND CMAKE_PREFIX_PATH ${QT_PREFIX_DIR})
-#list(APPEND CMAKE_FIND_ROOT_PATH ${QT_PREFIX_DIR})
-
-set(ENV{ANDROID_NDK_HOME} ${ANDROID_NDK_HOME})
-set(ANDROID_NDK ${ANDROID_NDK_HOME})
-set(ENV{ANDROID_SDK} ${ANDROID_SDK_HOME})
-set(ANDROID_SDK_ROOT ${ANDROID_SDK_HOME})
-set(ENV{JAVA_HOME} ${JAVA_HOME})
-set(ANDROID_USE_LLVM true)
 
 # vcpkg init
 if(DEFINED VCPKG_DIR AND NOT DEFINED CMAKE_TOOLCHAIN_FILE)
     set(CMAKE_TOOLCHAIN_FILE ${VCPKG_DIR}/scripts/buildsystems/vcpkg.cmake CACHE STRING "Vcpkg toolchain file")
-    set(VCPKG_CHAINLOAD_TOOLCHAIN_FILE ${QT_PREFIX_DIR}/lib/cmake/Qt6/qt.toolchain.cmake)
-    set(QT_CHAINLOAD_TOOLCHAIN_FILE ${ANDROID_NDK_HOME}/build/cmake/android.toolchain.cmake)
+    set(ENV{ANDROID_NDK_HOME} ${ANDROID_NDK_HOME})
+    set(VCPKG_CHAINLOAD_TOOLCHAIN_FILE ${ANDROID_NDK_HOME}/build/cmake/android.toolchain.cmake)
+    #set(VCPKG_CHAINLOAD_TOOLCHAIN_FILE ${QT_PREFIX_DIR}/lib/cmake/Qt6/qt.toolchain.cmake)
 endif()
 
 project(gldemo VERSION 0.1 LANGUAGES CXX)
-
-include(android/AddQtAndroidApk.cmake)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 

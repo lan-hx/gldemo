@@ -13,6 +13,8 @@ FILE(GLOB_RECURSE GLDEMO_SOURCE_MAIN
 message(STATUS "find sources: ${GLDEMO_SOURCE} ${GLDEMO_SOURCE_MAIN}")
 #ADD_EXECUTABLE(gldemo ${GLDEMO_SOURCE} ${GLDEMO_SOURCE_MAIN})
 qt_add_executable(gldemo ${GLDEMO_SOURCE} ${GLDEMO_SOURCE_MAIN})
+qt_finalize_executable(gldemo)
+add_qt_android_apk(gldemo_apk gldemo)
 
 TARGET_LINK_LIBRARIES(gldemo PRIVATE Qt6::Core Qt6::Widgets Qt6::OpenGL Qt6::OpenGLWidgets Qt6::Gui glm::glm)
 set_target_properties(gldemo PROPERTIES
@@ -22,7 +24,7 @@ set_target_properties(gldemo PROPERTIES
         MACOSX_BUNDLE TRUE
         WIN32_EXECUTABLE TRUE
         )
-add_dependencies(gldemo clang_format shader)
+add_dependencies(gldemo clang_format)
 
 if(WIN32)
     set(QT_DEPLOY_EXE "${QT_PREFIX_DIR}/bin/windeployqt.exe")
