@@ -68,6 +68,7 @@ endif()
 set(CMAKE_CXX_CLANG_TIDY "${CLANG_TIDY_BIN}")
 
 find_package(glm CONFIG REQUIRED)
+find_package(tinyobjloader CONFIG REQUIRED)
 
 include_directories(src/include test/include shader/include)
 
@@ -78,4 +79,4 @@ ADD_SUBDIRECTORY(shader)
 
 ADD_SUBDIRECTORY(src ${CMAKE_BINARY_DIR}/src)
 ADD_SUBDIRECTORY(res)
-ADD_SUBDIRECTORY(test ${CMAKE_BINARY_DIR}/test)
+# ADD_SUBDIRECTORY(test ${CMAKE_BINARY_DIR}/test)

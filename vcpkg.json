@@ -2,8 +2,8 @@
   "name": "gldemo",
   "version-string": "latest",
   "dependencies": [
-    "gtest",
     "opengl",
-    "glm"
+    "glm",
+    "tinyobjloader"
   ]
 }
