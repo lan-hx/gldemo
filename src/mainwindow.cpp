@@ -1,11 +1,13 @@
 #include "mainwindow.h"
 
-#include <QFileDialog>
-#include <QMessageBox>
-#include <QMovie>
+//#include <QFileDialog>
+//#include <QMessageBox>
+//#include <QMovie>
+#include <QKeyEvent>
 #include <queue>
 
 #include "UI/about/about.h"
+#include "UI/camera/camerasettings.h"
 #include "ui_mainwindow.h"
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow) {
@@ -25,6 +27,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
   setCentralWidget(main_gl_);
   main_gl_->setFixedSize(800, 600);
   adjustSize();
+  setFixedSize(width(), height());
 
   connect(main_gl_, &MainGLWindow::UpdateInfo, [&](int64_t nsec, const char *debug_info) {
     static std::deque<int64_t> fps_indecator;
@@ -36,6 +39,11 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
       fps_indecator.clear();
     }
     frame_latency_->setText("latency: " + QString::number(nsec / 1e6, 'f', 2) + "ms");
+  });
+
+  connect(ui->actioncamera, &QAction::triggered, [&]() {
+    auto s = new CameraSettings(main_gl_->camera_, this);
+    s->show();
   });
 
   // connect(ui->actionproject_info, &QAction::triggered, [&]() {
@@ -52,21 +60,10 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 }
 
 MainWindow::~MainWindow() { delete ui; }
+void MainWindow::paintEvent(QPaintEvent *event) { main_gl_->update(); }
 void MainWindow::keyPressEvent(QKeyEvent *event) {
   auto key = event->key();
-  switch (key) {
-    case Qt::Key_P:
-      emit Pause();
-      break;
-    default:
-      emit SendKey(event, true);
+  if (key == Qt::Key_Q) {
+    close();
   }
 }
-void MainWindow::keyReleaseEvent(QKeyEvent *event) {
-  auto key = event->key();
-  switch (key) {
-    default:
-      emit SendKey(event, false);
-  }
-}
-void MainWindow::paintEvent(QPaintEvent *event) { main_gl_->update(); }

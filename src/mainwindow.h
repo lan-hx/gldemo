@@ -1,7 +1,6 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <QKeyEvent>
 #include <QLabel>
 #include <QMainWindow>
 
@@ -19,22 +18,19 @@ class MainWindow : public QMainWindow {
   ~MainWindow();
 
  private:
-  Ui::MainWindow *ui;
-  QLabel *death_count_;
-  QLabel *play_time_;
-  QLabel *debug_output_;
-  QLabel *fps_;
-  QLabel *frame_latency_;
-  MainGLWindow *main_gl_;
+  Ui::MainWindow *ui = nullptr;
+  QLabel *death_count_ = nullptr;
+  QLabel *play_time_ = nullptr;
+  QLabel *debug_output_ = nullptr;
+  QLabel *fps_ = nullptr;
+  QLabel *frame_latency_ = nullptr;
+  MainGLWindow *main_gl_ = nullptr;
 
  protected:
   void keyPressEvent(QKeyEvent *event) override;
-  void keyReleaseEvent(QKeyEvent *event) override;
   void paintEvent(QPaintEvent *event) override;
 
  signals:
-  void Pause();
-  void SendKey(QKeyEvent *event, bool is_pressed);
 };
 
 #endif  // MAINWINDOW_H

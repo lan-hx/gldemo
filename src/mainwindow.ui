@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="sizePolicy">
-   <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
     <horstretch>0</horstretch>
     <verstretch>0</verstretch>
    </sizepolicy>
@@ -38,7 +38,7 @@
      <x>0</x>
      <y>0</y>
      <width>1000</width>
-     <height>21</height>
+     <height>25</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_about">
@@ -63,6 +63,7 @@
     </property>
     <addaction name="actionpause"/>
     <addaction name="actionstop"/>
+    <addaction name="actioncamera"/>
    </widget>
    <addaction name="menu"/>
    <addaction name="menu_2"/>
@@ -97,6 +98,11 @@
   <action name="actionstop">
    <property name="text">
     <string>停止</string>
+   </property>
+  </action>
+  <action name="actioncamera">
+   <property name="text">
+    <string>摄像机设置</string>
    </property>
   </action>
  </widget>
