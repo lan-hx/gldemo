@@ -17,13 +17,19 @@ struct GLTransform {
   QVector3D position_{0.0f, 0.0f, 0.0f};
   float pitch_{0.0f}, yaw_{0.0f}, roll_{0.0f};
   QQuaternion rotation_{0.0f, 0.0f, 0.0f, 0.0f};
-  QVector3D scale_{0.0f, 0.0f, 0.0f};
+  QVector3D scale_{1.0f, 1.0f, 1.0f};
 
   inline void SetAngles(float pitch, float yaw, float roll) {
     pitch_ = pitch;
     yaw_ = yaw;
     roll_ = roll;
     rotation_ = QQuaternion::fromEulerAngles(pitch, yaw, roll);
+  }
+  inline void SetAngles(QVector3D angle) {
+    pitch_ = angle.x();
+    yaw_ = angle.y();
+    roll_ = angle.z();
+    rotation_ = QQuaternion::fromEulerAngles(angle);
   }
 
   inline QVector3D GetFront() const { return rotation_ * QVector3D{0.0f, 0.0f, -1.0f}; }

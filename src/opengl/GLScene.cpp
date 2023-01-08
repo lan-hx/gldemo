@@ -3,3 +3,73 @@
 //
 
 #include "include/opengl/GLScene.h"
+
+#include "fs1_frag.h"
+#include "vs1_vert.h"
+
+using namespace std;
+
+GLScene::GLScene(QRect viewport, QObject *parent)
+    : viewport_(viewport),
+      camera_(new GLCamera({0.0f, 0.0f, 0.0f}, static_cast<float>(viewport.width()) / viewport.height())),
+      QObject(parent) {}
+
+void GLScene::Initialize(const std::vector<std::pair<std::string, std::string>> &models) {
+  // initialize shader program
+  delete shader_;
+  shader_ = new QOpenGLShaderProgram;
+  if (!shader_->addShaderFromSourceCode(QOpenGLShader::Vertex, vs1_vert)) {
+    throw std::runtime_error(shader_->log().toStdString());
+  }
+  if (!shader_->addShaderFromSourceCode(QOpenGLShader::Fragment, fs1_frag)) {
+    throw std::runtime_error(shader_->log().toStdString());
+  }
+  if (!shader_->link()) {
+    throw std::runtime_error(shader_->log().toStdString());
+  }
+
+  // load models
+  if (models.empty()) {
+    for (const auto &m : DEFAULT_MODELS) {
+      AddModel(get<0>(m), new GLModel(get<0>(m), get<1>(m), shader_));
+    }
+  } else {
+    for (const auto &m : models) {
+      AddModel(m.first, new GLModel(m.first, m.second, shader_));
+    }
+  }
+
+  // load objects
+  for (const auto &dobj : DEFAULT_OBJECTS) {
+    auto pmodel = GetModel(get<0>(dobj));
+    auto obj = new GLObject(pmodel, shader_);
+    obj->transform_.position_ = get<1>(dobj);
+    obj->transform_.SetAngles(get<1>(dobj));
+    obj->transform_.scale_ = get<3>(dobj);
+    AddObject(obj);
+  }
+}
+void GLScene::Draw() {
+  // set uniform for all active shaders
+  shader_->bind();
+  shader_->setUniformValue("view", camera_->GetViewMatrix());
+  shader_->setUniformValue("projection", camera_->GetProjectionMatrix());
+  shader_->release();
+
+  // draw
+  for (auto &obj : objects_) {
+    obj.second->Draw();
+  }
+}
+
+// TODO
+GLScene::~GLScene() {
+  delete camera_;
+  for (auto &obj : objects_) {
+    delete obj.second;
+  }
+  for (auto &m : models_) {
+    delete m.second;
+  }
+  delete shader_;
+}

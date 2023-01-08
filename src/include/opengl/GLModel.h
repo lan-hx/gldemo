@@ -5,8 +5,11 @@
 #ifndef GLDEMO_APK_SRC_OPENGL_GLMODEL_H_
 #define GLDEMO_APK_SRC_OPENGL_GLMODEL_H_
 
+#include <tiny_obj_loader.h>
+
 #include <QObject>
 #include <QOpenGLBuffer>
+#include <QOpenGLShaderProgram>
 #include <QOpenGLTexture>
 #include <QOpenGLVertexArrayObject>
 #include <QVector3D>
@@ -14,30 +17,12 @@
 
 struct GLMaterial {};
 
-struct GLVertex {
-  size_t v_;
-  size_t vt_;
-  size_t vn_;
-};
-
-struct GLFace {
-  GLVertex v_[3];
-};
-
-struct GLMesh {
-  std::vector<QVector3D> vertex_;
-  std::vector<QVector3D> texture_coord_;
-  std::vector<QVector3D> normal_;
-  std::vector<GLFace> faces_;
-};
-
 class GLModel : public QObject {
   Q_OBJECT
 
  private:
   std::string path_;
-  GLMesh mesh_;
-  GLMaterial material_;
+  tinyobj::ObjReader reader_;
   QOpenGLTexture *texture_;
 
  private:
@@ -46,16 +31,42 @@ class GLModel : public QObject {
   QOpenGLBuffer *ebo_;
 
  public:
-  // TODO
-  explicit GLModel(const std::string &path, QObject *parent = nullptr) : path_(path), QObject(parent) {
-    if (!path.empty()) {
-      Load(path);
-    }
+  explicit GLModel(QObject *parent = nullptr) : QObject(parent) {}
+  explicit GLModel(const std::string &path, const std::string &texture, QOpenGLShaderProgram *shader,
+                   QObject *parent = nullptr)
+      : QObject(parent) {
+    Load(path, texture, shader);
   }
-  // TODO
-  ~GLModel() override = default;
+  ~GLModel() override {
+    delete texture_;
+    delete ebo_;
+    delete vbo_;
+    delete vao_;
+  }
 
-  void Load(const std::string &path);
+  void Load(const std::string &path, const std::string &texture, QOpenGLShaderProgram *shader);
+  void LoadObj(const std::string &path);
+  void SetupVao(QOpenGLShaderProgram *shader);
+  /**
+   * 加载材质
+   * @param texture 材质文件位置
+   * @param setting 自定义材质设置
+   */
+  void LoadTexture(
+      const std::string &texture, const std::function<void(QOpenGLTexture *)> &setting = [](QOpenGLTexture *texture) {
+        // set warp
+        texture->setWrapMode(QOpenGLTexture::DirectionS, QOpenGLTexture::Repeat);
+        texture->setWrapMode(QOpenGLTexture::DirectionT, QOpenGLTexture::Repeat);
+
+        // set filter type
+        texture->setMagnificationFilter(QOpenGLTexture::Linear);
+        texture->setMinificationFilter(QOpenGLTexture::Linear);
+
+        texture->generateMipMaps();
+      });
+
+  inline QOpenGLVertexArrayObject *GetVao() { return vao_; }
+  inline QOpenGLTexture *GetTexture() { return texture_; }
 };
 
 #endif  // GLDEMO_APK_SRC_OPENGL_GLMODEL_H_

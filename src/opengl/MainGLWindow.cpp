@@ -128,7 +128,7 @@ void MainGLWindow::initializeGL() {
   vao_->release();
 
   // Load img
-  QImage img(":/wall.jpg");
+  QImage img(":/texture/wall.jpg");
   Q_ASSERT(!img.isNull());
   delete texture_;
   texture_ = new QOpenGLTexture(img.mirrored());

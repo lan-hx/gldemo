@@ -29,7 +29,6 @@ class GLObject : public QObject {
  public:
   explicit GLObject(GLModel *model, QOpenGLShaderProgram *shader, QObject *parent = nullptr)
       : id_(++id_inc), model_(model), shader_(shader), QObject(parent) {}
-  // TODO
   ~GLObject() override = default;
 
  public:
