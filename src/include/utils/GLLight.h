@@ -14,16 +14,16 @@ enum GLLightType { AmbientLight = 0, DirectionalLight = 1, SpotLight = 2 };
 
 struct GLLightStd140 {
   QVector3D position_{0.0f, 0.0f, 0.0f};
-  [[maybe_unused]] float padding1_;
+  float padding1_;
   QVector3D direction_{0.0f, 0.0f, 0.0f};
-  [[maybe_unused]] float padding2_;
+  float padding2_;
   QVector3D color_{1.0f, 1.0f, 1.0f};
-  [[maybe_unused]] float padding3_;
+  float padding3_;
   float intensity_;
   float angle_;
   float kc_, kl_, kq_;
   GLLightType type_;
-  [[maybe_unused]] uint64_t padding4_;
+  uint64_t padding4_;
 };
 
 static_assert(offsetof(GLLightStd140, position_) == 0);
@@ -43,14 +43,14 @@ class GLLights : public QObject {
   Q_OBJECT
 
  private:
-  uint64_t id_inc = 0;
+  uint64_t id_inc_ = 0;
   uint64_t uniform_index_;
   std::map<uint64_t, GLLight> lights_{};
   GLUniformBuffer ub_;
   size_t max_count_;
 
  public:
-  GLLights(uint64_t uniform_index = 0, size_t max_count = 20, QObject *parent = nullptr)
+  explicit GLLights(uint64_t uniform_index = 0, size_t max_count = 20, QObject *parent = nullptr)
       : uniform_index_(uniform_index),
         ub_(max_count * sizeof(GLLightStd140), this),
         max_count_(max_count),
@@ -66,26 +66,26 @@ class GLLights : public QObject {
     auto it = lights_.begin();
     uint64_t i = 0;
     for (; i < 20 && it != lights_.end(); ++i, ++it) {
-      ub_.write(i * sizeof(GLLight), sizeof(GLLight), &it->second);
+      ub_.Write(i * sizeof(GLLight), sizeof(GLLight), &it->second);
     }
-    ub_.write(max_count_ * sizeof(GLLight), sizeof(unsigned int), &i);
+    ub_.Write(max_count_ * sizeof(GLLight), sizeof(unsigned int), &i);
   }
 
-  void Use() { ub_.bind(); }
-  void Release() { ub_.release(); }
+  void Use() { ub_.Bind(); }
+  void Release() { ub_.Release(); }
 
   const std::map<uint64_t, GLLight> &GetLights() { return lights_; }
 
   void AddAmbientLight(QVector3D color, float intensity) {
     assert(lights_.size() < max_count_);
-    auto &light = (*lights_.emplace(id_inc++, GLLightStd140{}).first).second;
+    auto &light = (*lights_.emplace(id_inc_++, GLLightStd140{}).first).second;
     light.type_ = AmbientLight;
     light.color_ = color;
     light.intensity_ = intensity;
   }
   void AddDirectionalLight(QVector3D direction, QVector3D color, float intensity) {
     assert(lights_.size() < max_count_);
-    auto &light = (*lights_.emplace(id_inc++, GLLightStd140{}).first).second;
+    auto &light = (*lights_.emplace(id_inc_++, GLLightStd140{}).first).second;
     light.type_ = DirectionalLight;
     light.direction_ = direction;
     light.color_ = color;
@@ -94,7 +94,7 @@ class GLLights : public QObject {
   void AddSpotLight(QVector3D position, QVector3D direction, QVector3D color, float intensity, float angle, float kc,
                     float kl, float kq) {
     assert(lights_.size() < max_count_);
-    auto &light = (*lights_.emplace(id_inc++, GLLightStd140{}).first).second;
+    auto &light = (*lights_.emplace(id_inc_++, GLLightStd140{}).first).second;
     light.type_ = SpotLight;
     light.position_ = position;
     light.direction_ = direction;

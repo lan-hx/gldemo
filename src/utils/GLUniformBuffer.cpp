@@ -3,6 +3,7 @@
 //
 
 #include "include/utils/GLUniformBuffer.h"
+
 #include <QOpenGLExtraFunctions>
 
 GLUniformBuffer::GLUniformBuffer(size_t bufferSize, QObject *parent) : QObject(parent) {
@@ -25,15 +26,15 @@ void GLUniformBuffer::SetBindingPoint(uint32_t index) {
   QOpenGLExtraFunctions *f = QOpenGLContext::currentContext()->extraFunctions();
   f->glBindBufferBase(GL_UNIFORM_BUFFER, index, ubo_);
 }
-void GLUniformBuffer::bind() {
+void GLUniformBuffer::Bind() {
   QOpenGLFunctions *f = QOpenGLContext::currentContext()->functions();
   f->glBindBuffer(GL_UNIFORM_BUFFER, ubo_);
 }
-void GLUniformBuffer::release() {
+void GLUniformBuffer::Release() {
   QOpenGLFunctions *f = QOpenGLContext::currentContext()->functions();
   f->glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }
-void GLUniformBuffer::write(size_t offset, size_t size, void *data) {
+void GLUniformBuffer::Write(size_t offset, size_t size, void *data) {
   QOpenGLFunctions *f = QOpenGLContext::currentContext()->functions();
   f->glBindBuffer(GL_UNIFORM_BUFFER, ubo_);
   f->glBufferSubData(GL_UNIFORM_BUFFER, offset, size, data);

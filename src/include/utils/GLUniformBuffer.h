@@ -15,16 +15,16 @@ class GLUniformBuffer : public QObject {
   unsigned int ubo_;
 
  public:
-  GLUniformBuffer(size_t bufferSize, QObject *parent = nullptr);
+  explicit GLUniformBuffer(size_t bufferSize, QObject *parent = nullptr);
   GLUniformBuffer(GLUniformBuffer &&rhs) = delete;
   GLUniformBuffer(GLUniformBuffer &rhs) = delete;
   ~GLUniformBuffer() override;
 
   static void SetShaderBindingPoint(QOpenGLShaderProgram *shader, const char *name, uint32_t index);
   void SetBindingPoint(uint32_t index);
-  void bind();
-  void release();
-  void write(size_t offset, size_t size, void *data);
+  void Bind();
+  void Release();
+  void Write(size_t offset, size_t size, void *data);
 };
 
 #endif  // GLDEMO_APK_SRC_UTILS_GLUNIFORMBUFFER_H_
