@@ -61,3 +61,10 @@ void GLCamera::MouseCallback(float xoffset, float yoffset, float scroll_offset, 
   Update();
   emit ValueChanged();
 }
+
+QMatrix4x4 GLCamera::GetProjectionMatrix() const {
+  QMatrix4x4 projection;
+  projection.setToIdentity();
+  projection.perspective(fovy_, aspect_, znear_, zfar_);
+  return projection;
+}

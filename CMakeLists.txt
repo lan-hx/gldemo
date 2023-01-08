@@ -67,7 +67,7 @@ endif()
 
 set(CMAKE_CXX_CLANG_TIDY "${CLANG_TIDY_BIN}")
 
-find_package(glm CONFIG REQUIRED)
+#find_package(glm CONFIG REQUIRED)
 find_package(tinyobjloader CONFIG REQUIRED)
 
 include_directories(src/include test/include shader/include)

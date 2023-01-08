@@ -42,18 +42,18 @@ QVector3D cube_positions[] = {QVector3D(0.0f, 0.0f, 0.0f),    QVector3D(2.0f, 5.
  * @param src 原shader，不包含version
  * @return 包含version的shader
  */
-QByteArray VersionedShaderCode(const char *src) {
-  QByteArray versioned_src;
-
-  if (QOpenGLContext::currentContext()->isOpenGLES()) {
-    versioned_src.append(QByteArrayLiteral("#version 300 es\n"));
-  } else {
-    versioned_src.append(QByteArrayLiteral("#version 330\n"));
-  }
-
-  versioned_src.append(src);
-  return versioned_src;
-}
+// QByteArray VersionedShaderCode(const char *src) {
+//   QByteArray versioned_src;
+//
+//   if (QOpenGLContext::currentContext()->isOpenGLES()) {
+//     versioned_src.append(QByteArrayLiteral("#version 300 es\n"));
+//   } else {
+//     versioned_src.append(QByteArrayLiteral("#version 330\n"));
+//   }
+//
+//   versioned_src.append(src);
+//   return versioned_src;
+// }
 
 MainGLWindow::MainGLWindow(QWidget *parent) : QOpenGLWidget(parent) { setFocusPolicy(Qt::StrongFocus); }
 
@@ -68,7 +68,7 @@ MainGLWindow::~MainGLWindow() {
 
 void MainGLWindow::initializeGL() {
   // camera init
-  camera_ = new GLCamera({0.0f, 0.0f, 3.0f});
+  camera_ = new GLCamera({0.0f, 0.0f, 3.0f}, static_cast<float>(width()) / height());
 
   // the same as glad init
   QOpenGLFunctions *f = QOpenGLContext::currentContext()->functions();
@@ -127,7 +127,7 @@ void MainGLWindow::initializeGL() {
   program_->release();
   vao_->release();
 
-  // load img
+  // Load img
   QImage img(":/wall.jpg");
   Q_ASSERT(!img.isNull());
   delete texture_;
@@ -145,7 +145,7 @@ void MainGLWindow::initializeGL() {
   texture_->setMagnificationFilter(QOpenGLTexture::Linear);
   texture_->setMinificationFilter(QOpenGLTexture::Linear);
 
-  // load pic to texture
+  // Load pic to texture
   // f->glTexImage2D(/*target*/ GL_TEXTURE_2D, /*mipmap level*/ 0, /*save format*/ GL_RGB, width, height, /*always*/ 0,
   //             /*source format*/ GL_RGB, /*data type*/ GL_UNSIGNED_BYTE, data);
   // f->glGenerateMipmap(GL_TEXTURE_2D);  // auto generate mipmap
@@ -210,9 +210,7 @@ void MainGLWindow::paintGL() {
   program_->setUniformValue("view", camera_->GetViewMatrix());
 
   // projection
-  projection_.setToIdentity();
-  projection_.perspective(camera_->GetFOV(), static_cast<float>(width()) / height(), 0.1f, 100.0f);
-  program_->setUniformValue("projection", projection_);
+  program_->setUniformValue("projection", camera_->GetProjectionMatrix());
   update();
 
   // draw
@@ -233,9 +231,8 @@ void MainGLWindow::paintGL() {
 }
 void MainGLWindow::resizeGL(int w, int h) {
   // projection
-  projection_.setToIdentity();
-  projection_.perspective(45.0f, static_cast<float>(w) / h, 0.1f, 100.0f);
-  program_->setUniformValue("projection", projection_);
+  camera_->SetAspect(static_cast<float>(w) / h);
+  program_->setUniformValue("projection", camera_->GetProjectionMatrix());
   update();
 }
 void MainGLWindow::keyPressEvent(QKeyEvent *event) {
