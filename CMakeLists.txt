@@ -1,11 +1,4 @@
 cmake_minimum_required(VERSION 3.13)
-if (NOT DEFINED QT_PREFIX_DIR)
-    set(QT_PREFIX_DIR C:/Qt/6.4.1/mingw_64)
-endif()
-if (NOT DEFINED VCPKG_DIR)
-    set(VCPKG_DIR "-Wl, -rpath=E:/ComputerGraphics/gldemo/vcpkg")
-endif()
-
 # Update qt variables
 message("QT_PREFIX_DIR: ${QT_PREFIX_DIR}")
 #list(APPEND CMAKE_PREFIX_PATH ${QT_PREFIX_DIR})
@@ -79,8 +72,6 @@ endif()
 if(NOT DEFINED DO_NOT_USE_CLANG_TIDY)
     set(CMAKE_CXX_CLANG_TIDY "${CLANG_TIDY_BIN}")
 endif()
-
-set(tinyobjloader_DIR E:/ComputerGraphics/gldemo/vcpkg/packages/tinyobjloader_x64-mingw-dynamic/share/tinyobjloader)
 
 #find_package(glm CONFIG REQUIRED)
 find_package(tinyobjloader CONFIG REQUIRED)

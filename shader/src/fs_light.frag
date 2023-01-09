@@ -2,7 +2,7 @@
 in vec3 fPosition;
 in vec3 fNormal;
 in vec2 fTexCoord;
-out vec4 color;
+out vec4 fColor;
 
 uniform sampler2D ourTexture;
 
@@ -65,11 +65,13 @@ vec3 calcLight(Light light, vec3 normal, vec3 viewDir) {
 
 void main()
 {
-  vec3 viewDir = normalize(viewPos - fPosition);
-  vec3 normal = normalize(fNormal);
-  color = vec3(0.0f, 0.0f, 0.0f);
-  for(uint i = 0; i < light_count; ++i) {
-    color += calcLight(light[i], normal, viewDir);
-  }
-  color *= texture(ourTexture, fTexCoord);
+//  vec3 viewDir = normalize(viewPos - fPosition);
+//  vec3 normal = normalize(fNormal);
+//  vec3 color = vec3(0.0f, 0.0f, 0.0f);
+//  for(uint i = 0; i < light_count; ++i) {
+//    color += calcLight(light[i], normal, viewDir);
+//  }
+//  fColor = vec4(color, 1.0f);
+//  fColor *= texture(ourTexture, fTexCoord);
+  fColor = texture(ourTexture, fTexCoord);
 }

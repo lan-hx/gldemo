@@ -42,7 +42,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
   });
 
   connect(ui->actioncamera, &QAction::triggered, [&]() {
-    auto s = new CameraSettings(main_gl_->camera_, this);
+    auto s = new CameraSettings(main_gl_->scene_->GetCamera(), this);
     s->show();
   });
 

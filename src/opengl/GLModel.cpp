@@ -15,54 +15,6 @@ void GLModel::Load(const std::string &path, const std::string &texture, QOpenGLS
   auto &attrib = reader_.GetAttrib();
   auto &shapes = reader_.GetShapes();
   auto &materials = reader_.GetMaterials();
-  _materials.clear();
-  _materials.resize(materials.size());
-
-  std::vector<GLVertex> vertices;
-  std::vector<uint32_t> indices;
-  unordered_map<GLVertex, uint32_t> uniqueVertices;
-
-  for (const auto& material : materials){
-    GLMaterial m;
-
-    // TODO: get needed material
-
-    _materials.emplace_back(m);
-  }
-
-  for (const auto& shape : shapes){
-    for (const auto& index : shape.mesh.indices){
-      GLVertex vertex;
-      vertex.position[0] = attrib.vertices[3 * index.vertex_index + 0];
-      vertex.position[1] = attrib.vertices[3 * index.vertex_index + 1];
-      vertex.position[2] = attrib.vertices[3 * index.vertex_index + 2];
-      if (index.normal_index >= 0){
-        vertex.normal[0] = attrib.normals[3 * index.normal_index + 0];
-        vertex.normal[1] = attrib.normals[3 * index.normal_index + 1];
-        vertex.normal[2] = attrib.normals[3 * index.normal_index + 2];
-      }
-      if (index.texcoord_index >= 0){
-        vertex.texcoord[0] = attrib.texcoords[3 * index.texcoord_index + 0];
-        vertex.texcoord[1] = attrib.texcoords[3 * index.texcoord_index + 1];
-      }
-      if (!attrib.colors.empty()){
-        vertex.color[0] = attrib.colors[3 * index.vertex_index + 0];
-        vertex.color[1] = attrib.colors[3 * index.vertex_index + 1];
-        vertex.color[2] = attrib.colors[3 * index.vertex_index + 2];
-      }
-
-      if (uniqueVertices.count(vertex) == 0) {
-          uniqueVertices[vertex] = static_cast<uint32_t>(vertices.size());
-          vertices.push_back(vertex);
-      }
-
-      indices.push_back(uniqueVertices[vertex]);
-    }
-  }
-
-  _vertices = vertices;
-  _indices = indices;
-
 
   SetupVao(shader);
 
@@ -89,6 +41,58 @@ void GLModel::LoadObj(const string &path) {
     std::cout << "[WARNING] TinyObjReader: " << reader_.Warning();
   }
   obj_file.close();
+
+  auto &attrib = reader_.GetAttrib();
+  auto &shapes = reader_.GetShapes();
+  auto &materials = reader_.GetMaterials();
+
+  materials_.clear();
+  materials_.resize(materials.size());
+
+  std::vector<GLVertex> vertices;
+  std::vector<uint32_t> indices;
+  unordered_map<GLVertex, uint32_t> unique_vertices;
+
+  for (const auto &material : materials) {
+    GLMaterial m;
+
+    // TODO: get needed material
+
+    materials_.emplace_back(m);
+  }
+
+  for (const auto &shape : shapes) {
+    for (const auto &index : shape.mesh.indices) {
+      GLVertex vertex;
+      vertex.position_[0] = attrib.vertices[3 * index.vertex_index + 0];
+      vertex.position_[1] = attrib.vertices[3 * index.vertex_index + 1];
+      vertex.position_[2] = attrib.vertices[3 * index.vertex_index + 2];
+      if (index.normal_index >= 0) {
+        vertex.normal_[0] = attrib.normals[3 * index.normal_index + 0];
+        vertex.normal_[1] = attrib.normals[3 * index.normal_index + 1];
+        vertex.normal_[2] = attrib.normals[3 * index.normal_index + 2];
+      }
+      if (index.texcoord_index >= 0) {
+        vertex.texcoord_[0] = attrib.texcoords[3 * index.texcoord_index + 0];
+        vertex.texcoord_[1] = attrib.texcoords[3 * index.texcoord_index + 1];
+      }
+      if (!attrib.colors.empty()) {
+        vertex.color_[0] = attrib.colors[3 * index.vertex_index + 0];
+        vertex.color_[1] = attrib.colors[3 * index.vertex_index + 1];
+        vertex.color_[2] = attrib.colors[3 * index.vertex_index + 2];
+      }
+
+      if (!unique_vertices.contains(vertex)) {
+        unique_vertices[vertex] = static_cast<uint32_t>(vertices.size());
+        vertices.push_back(vertex);
+      }
+
+      indices.push_back(unique_vertices[vertex]);
+    }
+  }
+
+  vertices_ = vertices;
+  indices_ = indices;
 }
 
 void GLModel::SetupVao(QOpenGLShaderProgram *shader) {
@@ -109,30 +113,21 @@ void GLModel::SetupVao(QOpenGLShaderProgram *shader) {
   vbo_->create();
   vbo_->bind();
   vbo_->setUsagePattern(QOpenGLBuffer::StaticDraw);
-  vbo_->allocate(_vertices.data(), sizeof(GLVertex) * _vertices.size());
-  ebo_ = new QOpenGLBuffer;
+  vbo_->allocate(vertices_.data(), sizeof(GLVertex) * vertices_.size());
+  ebo_ = new QOpenGLBuffer(QOpenGLBuffer::IndexBuffer);
   ebo_->create();
   ebo_->bind();
   ebo_->setUsagePattern(QOpenGLBuffer::StaticDraw);
-  ebo_->allocate(_indices.data(), sizeof(uint32_t) * _indices.size());
+  ebo_->allocate(indices_.data(), sizeof(uint32_t) * indices_.size());
 
   shader->enableAttributeArray(0);
-  shader->setAttributeBuffer(0, GL_FLOAT, offsetof(GLVertex, position), 3, sizeof(GLVertex));
+  shader->setAttributeBuffer(0, GL_FLOAT, offsetof(GLVertex, position_), 3, sizeof(GLVertex));
   shader->enableAttributeArray(1);
-  shader->setAttributeBuffer(1, GL_FLOAT, offsetof(GLVertex, normal), 3, sizeof(GLVertex));
+  shader->setAttributeBuffer(1, GL_FLOAT, offsetof(GLVertex, normal_), 3, sizeof(GLVertex));
   shader->enableAttributeArray(2);
-  shader->setAttributeBuffer(2, GL_FLOAT, offsetof(GLVertex, texcoord), 2, sizeof(GLVertex));
+  shader->setAttributeBuffer(2, GL_FLOAT, offsetof(GLVertex, texcoord_), 2, sizeof(GLVertex));
   shader->enableAttributeArray(3);
-  shader->setAttributeBuffer(3, GL_FLOAT, offsetof(GLVertex, color), 3, sizeof(GLVertex));
-  // vbo_->allocate(vertices, sizeof(vertices));
-  // shader->enableAttributeArray(0);
-  // shader->setAttributeBuffer(0, GL_FLOAT, 0, 3, 5 * sizeof(float));
-
-  // ebo_ = new QOpenGLBuffer;
-  // ebo_->create();
-  // ebo_->bind();
-  // ebo_->setUsagePattern(QOpenGLBuffer::StaticDraw);
-  // ebo_->allocate(indices, sizeof(indices));
+  shader->setAttributeBuffer(3, GL_FLOAT, offsetof(GLVertex, color_), 3, sizeof(GLVertex));
 
   shader->release();
   vao_->release();

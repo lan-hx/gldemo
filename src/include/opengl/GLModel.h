@@ -13,70 +13,58 @@
 #include <QOpenGLTexture>
 #include <QOpenGLVertexArrayObject>
 #include <QVector3D>
-#include <vector>
 #include <functional>
+#include <vector>
 
 struct GLMaterial {};
 
-struct GLVertex{
-  float position[3];
-  float normal[3];
-  float texcoord[2];
-  float color[3];
+struct GLVertex {
+  float position_[3];
+  float normal_[3];
+  float texcoord_[2];
+  float color_[3];
 
-  GLVertex():
-    position{0}, normal{0}, texcoord{0}, color{0}{}
+  GLVertex() : position_{0}, normal_{0}, texcoord_{0}, color_{0} {}
 
-  inline bool operator == (const GLVertex &v) const {
-    return position[0] == v.position[0] &&
-    position[1] == v.position[1] &&
-    position[2] == v.position[2] &&
-    normal[0] == v.normal[0] &&
-    normal[1] == v.normal[1] &&
-    normal[2] == v.normal[2] &&
-    texcoord[0] == v.texcoord[0] &&
-    texcoord[1] == v.texcoord[1] &&
-    color[0] == v.color[0] &&
-    color[1] == v.color[1] &&
-    color[2] == v.color[2];
+  inline bool operator==(const GLVertex &v) const {
+    return position_[0] == v.position_[0] && position_[1] == v.position_[1] && position_[2] == v.position_[2] &&
+           normal_[0] == v.normal_[0] && normal_[1] == v.normal_[1] && normal_[2] == v.normal_[2] &&
+           texcoord_[0] == v.texcoord_[0] && texcoord_[1] == v.texcoord_[1] && color_[0] == v.color_[0] &&
+           color_[1] == v.color_[1] && color_[2] == v.color_[2];
   }
 };
 
-namespace std{
-  template<>
-  struct hash<GLVertex> {
-    size_t operator()(const GLVertex &v) const {
-      return (hash<float>()(v.position[0]) << 0) ^ 
-      (hash<float>()(v.position[1]) << 1) ^
-      (hash<float>()(v.position[2]) << 2) ^
-      (hash<float>()(v.normal[0]) << 3) ^
-      (hash<float>()(v.normal[1]) << 4) ^
-      (hash<float>()(v.normal[2]) << 5) ^
-      (hash<float>()(v.texcoord[0]) << 6) ^
-      (hash<float>()(v.texcoord[1]) << 7) ^
-      (hash<float>()(v.color[0]) << 8) ^
-      (hash<float>()(v.color[1]) << 9) ^
-      (hash<float>()(v.color[2]) << 10);
-    }
-  };
-}
+namespace std {
+template <>
+struct hash<GLVertex> {
+  size_t operator()(const GLVertex &v) const {
+    return (hash<float>()(v.position_[0]) << 0) ^ (hash<float>()(v.position_[1]) << 1) ^
+           (hash<float>()(v.position_[2]) << 2) ^ (hash<float>()(v.normal_[0]) << 3) ^
+           (hash<float>()(v.normal_[1]) << 4) ^ (hash<float>()(v.normal_[2]) << 5) ^
+           (hash<float>()(v.texcoord_[0]) << 6) ^ (hash<float>()(v.texcoord_[1]) << 7) ^
+           (hash<float>()(v.color_[0]) << 8) ^ (hash<float>()(v.color_[1]) << 9) ^ (hash<float>()(v.color_[2]) << 10);
+  }
+};
+}  // namespace std
 
 class GLModel : public QObject {
   Q_OBJECT
 
+  friend class GLObject;
+
  private:
   std::string path_;
   tinyobj::ObjReader reader_;
-  QOpenGLTexture *texture_;
+  QOpenGLTexture *texture_ = nullptr;
 
  private:
-  QOpenGLVertexArrayObject *vao_;
-  QOpenGLBuffer *vbo_;
-  QOpenGLBuffer *ebo_;
+  QOpenGLVertexArrayObject *vao_ = nullptr;
+  QOpenGLBuffer *vbo_ = nullptr;
+  QOpenGLBuffer *ebo_ = nullptr;
 
-  std::vector<GLMaterial> _materials;
-  std::vector<GLVertex> _vertices;
-  std::vector<uint32_t> _indices;
+  std::vector<GLMaterial> materials_{};
+  std::vector<GLVertex> vertices_{};
+  std::vector<uint32_t> indices_{};
 
  public:
   explicit GLModel(QObject *parent = nullptr) : QObject(parent) {}

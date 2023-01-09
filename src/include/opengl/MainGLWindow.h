@@ -14,7 +14,7 @@
 #include <QtOpenGLWidgets/QOpenGLWidget>
 #include <set>
 
-#include "camera/GLCamera.h"
+#include "opengl/GLScene.h"
 
 class MainWindow;
 
@@ -43,25 +43,11 @@ class MainGLWindow : public QOpenGLWidget, public QOpenGLExtraFunctions {
   void wheelEvent(QWheelEvent *event) override;
 
  private:
-  QOpenGLVertexArrayObject *vao_ =
-      nullptr;                    // Vertex Array Object: array of vertex attrib and bounded VBO and bounded EBO
-  QOpenGLBuffer *vbo_ = nullptr;  // Vertex Buffer Objects
-  QOpenGLBuffer *ebo_ = nullptr;  // Element Buffer Object / Index Buffer Object
-
-  QOpenGLShaderProgram *program_ = nullptr;
-
-  // QMatrix4x4 model_;
-  QMatrix4x4 view_;
-  QMatrix4x4 projection_;
-
-  QOpenGLTexture *texture_ = nullptr;
+  GLScene *scene_;
 
   QElapsedTimer time_;
 
   int64_t time_elapsed_;  // in ns
-
-  // camera
-  GLCamera *camera_ = nullptr;
 
   // io
   std::set<Qt::Key> keys_{};

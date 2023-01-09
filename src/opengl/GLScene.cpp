@@ -4,24 +4,26 @@
 
 #include "include/opengl/GLScene.h"
 
-#include "fs1_frag.h"
-#include "vs1_vert.h"
+#include <QOpenGLExtraFunctions>
+
+#include "fs_light_frag.h"
+#include "vs_light_vert.h"
 
 using namespace std;
 
 GLScene::GLScene(QRect viewport, QObject *parent)
     : viewport_(viewport),
-      camera_(new GLCamera({0.0f, 0.0f, 0.0f}, static_cast<float>(viewport.width()) / viewport.height())),
+      camera_(new GLCamera({0.0f, 0.0f, 3.0f}, static_cast<float>(viewport.width()) / viewport.height())),
       QObject(parent) {}
 
 void GLScene::Initialize(const std::vector<std::pair<std::string, std::string>> &models) {
   // initialize shader program
   delete shader_;
   shader_ = new QOpenGLShaderProgram;
-  if (!shader_->addShaderFromSourceCode(QOpenGLShader::Vertex, vs1_vert)) {
+  if (!shader_->addShaderFromSourceCode(QOpenGLShader::Vertex, vs_light_vert)) {
     throw std::runtime_error(shader_->log().toStdString());
   }
-  if (!shader_->addShaderFromSourceCode(QOpenGLShader::Fragment, fs1_frag)) {
+  if (!shader_->addShaderFromSourceCode(QOpenGLShader::Fragment, fs_light_frag)) {
     throw std::runtime_error(shader_->log().toStdString());
   }
   if (!shader_->link()) {
@@ -50,6 +52,11 @@ void GLScene::Initialize(const std::vector<std::pair<std::string, std::string>> 
   }
 }
 void GLScene::Draw() {
+  QOpenGLExtraFunctions *f = QOpenGLContext::currentContext()->extraFunctions();
+  // clear
+  f->glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+  f->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
   // set uniform for all active shaders
   shader_->bind();
   shader_->setUniformValue("view", camera_->GetViewMatrix());

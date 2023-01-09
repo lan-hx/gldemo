@@ -13,10 +13,10 @@ void GLObject::Draw() {
   auto f = QOpenGLContext::currentContext()->functions();
   model_->GetTexture()->bind();
   shader_->bind();
-  shader_->setUniformValue("model", transform_.GetModelMatrix());
   model_->GetVao()->bind();
+  shader_->setUniformValue("model", transform_.GetModelMatrix());
   // TODO: draw
-  // f->glDrawElements(GL_TRIANGLES, ..., GL_UNSIGNED_INT, 0);
+  f->glDrawElements(GL_TRIANGLES, model_->indices_.size(), GL_UNSIGNED_INT, nullptr);
   model_->GetVao()->release();
   shader_->release();
 }

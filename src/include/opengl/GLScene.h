@@ -41,7 +41,10 @@ class GLScene : public QObject {
   inline auto GetModels() -> decltype(models_) { return models_; }
   inline GLModel *GetModel(const std::string &name) { return models_[name]; }
   inline GLCamera *GetCamera() { return camera_; }
-  inline void SetViewPort(QRect viewport) { viewport_ = viewport; }
+  inline void SetViewPort(QRect viewport) {
+    viewport_ = viewport;
+    camera_->SetAspect(static_cast<float>(viewport.width()) / viewport.height());
+  }
 
   /**
    * load resource and default objects
@@ -60,8 +63,8 @@ class GLScene : public QObject {
       // model | position | rotation | scale
       std::make_tuple(":/model/cube.obj", QVector3D{0.0f, 0.0f, 0.0f}, QVector3D{0.0f, 0.0f, 0.0f},
                       QVector3D{1.0f, 1.0f, 1.0f}),
-      std::make_tuple(":/model/cube.obj", QVector3D{0.0f, 0.0f, 0.0f}, QVector3D{0.0f, 0.0f, 0.0f},
-                      QVector3D{1.0f, 1.0f, 1.0f}),
+      // std::make_tuple(":/model/cube.obj", QVector3D{0.0f, 0.0f, 0.0f}, QVector3D{0.0f, 0.0f, 0.0f},
+      //                QVector3D{1.0f, 1.0f, 1.0f}),
   };
 };
 
