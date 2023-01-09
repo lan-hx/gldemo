@@ -65,7 +65,9 @@ else()
     message(STATUS "found clang-tidy at ${CLANG_TIDY_BIN}")
 endif()
 
-set(CMAKE_CXX_CLANG_TIDY "${CLANG_TIDY_BIN}")
+if(NOT DEFINED DO_NOT_USE_CLANG_TIDY)
+    set(CMAKE_CXX_CLANG_TIDY "${CLANG_TIDY_BIN}")
+endif()
 
 #find_package(glm CONFIG REQUIRED)
 find_package(tinyobjloader CONFIG REQUIRED)

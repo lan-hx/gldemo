@@ -45,10 +45,10 @@ void GLCamera::MouseCallback(float xoffset, float yoffset, float scroll_offset, 
   yaw_ -= xoffset;
   pitch_ += yoffset;
   if (pitch_ > PI * 89 / 180) {
-    pitch_ = PI * 89 / 180;
+    pitch_ = static_cast<float>(PI * 89 / 180);
   }
   if (pitch_ < -PI * 89 / 180) {
-    pitch_ = -PI * 89 / 180;
+    pitch_ = static_cast<float>(-PI * 89 / 180);
   }
   zoom_ += scroll_offset * mouse_sensitivity_;
   if (zoom_ < 1.0f) {

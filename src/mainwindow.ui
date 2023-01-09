@@ -64,6 +64,8 @@
     <addaction name="actionpause"/>
     <addaction name="actionstop"/>
     <addaction name="actioncamera"/>
+    <addaction name="separator"/>
+    <addaction name="actionscreenshot"/>
    </widget>
    <addaction name="menu"/>
    <addaction name="menu_2"/>
@@ -103,6 +105,11 @@
   <action name="actioncamera">
    <property name="text">
     <string>摄像机设置</string>
+   </property>
+  </action>
+  <action name="actionscreenshot">
+   <property name="text">
+    <string>截图(F12)</string>
    </property>
   </action>
  </widget>

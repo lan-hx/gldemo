@@ -32,8 +32,8 @@ class GLCamera : public QObject {
   QVector3D right_{};   // 摄像机right向量
   QVector3D world_up_;  // 世界坐标up向量
   // euler Angles
-  float pitch_ = 0.0f;   // 俯仰角
-  float yaw_ = -PI / 2;  // 偏航角
+  float pitch_ = 0.0f;                       // 俯仰角
+  float yaw_ = static_cast<float>(-PI / 2);  // 偏航角
   // camera options
   float movement_speed_ = 2.5f;       // 移动速度
   float mouse_sensitivity_ = 0.002f;  // 鼠标敏感度
@@ -41,7 +41,7 @@ class GLCamera : public QObject {
   // projection matrix
   float &fovy_ = zoom_;
   float aspect_;
-  float znear_ = 0.1, zfar_ = 100.0f;
+  float znear_ = 0.1f, zfar_ = 100.0f;
 
  public:
   /**

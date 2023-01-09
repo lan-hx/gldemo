@@ -4,7 +4,9 @@
 
 #include "opengl/MainGLWindow.h"
 
+#include <QFileDialog>
 #include <QKeyEvent>
+#include <QMessageBox>
 #include <QTime>
 
 #include "fs1_frag.h"
@@ -239,6 +241,8 @@ void MainGLWindow::keyPressEvent(QKeyEvent *event) {
   auto key = event->key();
   if (key == Qt::Key_W || key == Qt::Key_S || key == Qt::Key_A || key == Qt::Key_D) {
     keys_.emplace(static_cast<Qt::Key>(key));
+  } else if (key == Qt::Key_F12) {
+    TakeScreenShot();
   } else {
     event->ignore();
   }
@@ -266,5 +270,13 @@ void MainGLWindow::mousePressEvent(QMouseEvent *event) {
 void MainGLWindow::mouseReleaseEvent(QMouseEvent *event) {
   if ((event->buttons() & Qt::LeftButton) == 0) {
     mouse_is_pressed_ = false;
+  }
+}
+void MainGLWindow::TakeScreenShot() {
+  // save screenshot
+  auto pixmap = grab();
+  auto file_name = QFileDialog::getSaveFileName(this, tr("将截图保存到..."), tr(""), tr("Images(*.png *.jpg)"));
+  if (!pixmap.save(file_name)) {
+    QMessageBox::warning(this, tr("保存失败"), tr("好像什么出错了"));
   }
 }

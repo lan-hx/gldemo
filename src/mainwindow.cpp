@@ -46,6 +46,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     s->show();
   });
 
+  connect(ui->actionscreenshot, &QAction::triggered, [&]() { main_gl_->TakeScreenShot(); });
+
   // connect(ui->actionproject_info, &QAction::triggered, [&]() {
   //   game_ui_->Pause();
   //   About ab(this);

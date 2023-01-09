@@ -27,6 +27,8 @@ class MainGLWindow : public QOpenGLWidget, public QOpenGLExtraFunctions {
   explicit MainGLWindow(QWidget *parent = nullptr);
   ~MainGLWindow() override;
 
+  void TakeScreenShot();
+
  protected:
   void initializeGL() override;
   void paintGL() override;
