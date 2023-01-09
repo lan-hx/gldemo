@@ -1,8 +1,15 @@
 cmake_minimum_required(VERSION 3.13)
+if (NOT DEFINED QT_PREFIX_DIR)
+    set(QT_PREFIX_DIR C:/Qt/6.4.1/mingw_64)
+endif()
+if (NOT DEFINED VCPKG_DIR)
+    set(VCPKG_DIR "-Wl, -rpath=E:/ComputerGraphics/gldemo/vcpkg")
+endif()
 
 # Update qt variables
 message("QT_PREFIX_DIR: ${QT_PREFIX_DIR}")
 #list(APPEND CMAKE_PREFIX_PATH ${QT_PREFIX_DIR})
+message("VCPKG_DIR: ${VCPKG_DIR}")
 
 # vcpkg init
 if(DEFINED VCPKG_DIR AND NOT DEFINED CMAKE_TOOLCHAIN_FILE)
@@ -27,6 +34,8 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_C_STANDARD 17)
 set(CMAKE_C_STANDARD_REQUIRED ON)
+
+set(Qt6_DIR ${QT_PREFIX_DIR}/lib/cmake/Qt6)
 
 find_package(Qt6 CONFIG REQUIRED COMPONENTS Core Gui Widgets OpenGL OpenGLWidgets)
 qt_standard_project_setup()
@@ -68,6 +77,8 @@ else()
 endif()
 
 set(CMAKE_CXX_CLANG_TIDY "${CLANG_TIDY_BIN}")
+
+set(tinyobjloader_DIR E:/ComputerGraphics/gldemo/vcpkg/packages/tinyobjloader_x64-mingw-dynamic/share/tinyobjloader)
 
 #find_package(glm CONFIG REQUIRED)
 find_package(tinyobjloader CONFIG REQUIRED)
