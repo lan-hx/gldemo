@@ -35,11 +35,11 @@ uniform vec3 viewPos;
 uniform Material material;
 
 vec3 calcLight(in Light light, in vec3 normal, in vec3 viewDir) {
-  if (light.type == 0) {
+  if (light.type == 0u) {
     // ambient light
     return material.ka * light.color * light.intensity;
   }
-  else if (light.type == 1) {
+  else if (light.type == 1u) {
     // directional light
     vec3 lightDir = normalize(-light.direction);
     vec3 diffuse = light.color * max(dot(lightDir, normal), 0.0f) * material.kd;
@@ -47,7 +47,7 @@ vec3 calcLight(in Light light, in vec3 normal, in vec3 viewDir) {
     vec3 specular = light.color * pow(max(dot(viewDir, reflectDir), 0.0), material.ns) * material.ks;
     return light.intensity * (diffuse + specular);
   }
-  else if (light.type == 2) {
+  else if (light.type == 2u) {
     // spotlight
     vec3 lightDir = normalize(light.position - fPosition);
     float theta = acos(-dot(lightDir, normalize(light.direction)));
@@ -71,7 +71,7 @@ void main()
   vec3 viewDir = normalize(viewPos - fPosition);
   vec3 normal = normalize(fNormal);
   vec3 color = vec3(0.0f, 0.0f, 0.0f);
-  for (uint i = 0; i < light_count; ++i) {
+  for (uint i = 0u; i < light_count; ++i) {
     color += calcLight(lights[i], normal, viewDir);
   }
   fColor = vec4(color, 1.0f);

@@ -73,8 +73,8 @@ void GLModel::LoadObj(const string &path) {
         vertex.normal_[2] = attrib.normals[3 * index.normal_index + 2];
       }
       if (index.texcoord_index >= 0) {
-        vertex.texcoord_[0] = attrib.texcoords[3 * index.texcoord_index + 0];
-        vertex.texcoord_[1] = attrib.texcoords[3 * index.texcoord_index + 1];
+        vertex.texcoord_[0] = attrib.texcoords[2 * index.texcoord_index + 0];
+        vertex.texcoord_[1] = attrib.texcoords[2 * index.texcoord_index + 1];
       }
       if (!attrib.colors.empty()) {
         vertex.color_[0] = attrib.colors[3 * index.vertex_index + 0];
