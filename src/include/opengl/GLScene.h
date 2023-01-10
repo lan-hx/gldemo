@@ -13,6 +13,7 @@
 #include "camera/GLCamera.h"
 #include "opengl/GLModel.h"
 #include "opengl/GLObject.h"
+#include "utils/GLLight.h"
 
 /**
  * OpenGL 场景
@@ -28,9 +29,12 @@ class GLScene : public QObject {
   QOpenGLShaderProgram *shader_{};
   QRect viewport_;
   GLCamera *camera_;
+  GLLights *lights_;
 
  public:
   explicit GLScene(QRect viewport, QObject *parent = nullptr);
+  GLScene(const GLScene &r) = delete;
+  GLScene(const GLScene &&r) = delete;
   ~GLScene() override;
 
   inline void AddModel(const std::string &name, GLModel *model) { models_.emplace(name, model); }
@@ -45,6 +49,7 @@ class GLScene : public QObject {
     viewport_ = viewport;
     camera_->SetAspect(static_cast<float>(viewport.width()) / viewport.height());
   }
+  inline uint64_t AddLight(GLLight light) { return lights_->AddLight(light); }
 
   /**
    * load resource and default objects

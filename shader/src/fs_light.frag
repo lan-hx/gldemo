@@ -27,19 +27,19 @@ struct Light {
 
 layout (std140) uniform Lights
 {
-  Light light[20];
+  Light lights[20];
   uint light_count;
 };
 
 uniform vec3 viewPos;
 uniform Material material;
 
-vec3 calcLight(Light light, vec3 normal, vec3 viewDir) {
-  if(light.type == 0) {
+vec3 calcLight(in Light light, in vec3 normal, in vec3 viewDir) {
+  if (light.type == 0) {
     // ambient light
     return material.ka * light.color * light.intensity;
   }
-  else if(light.type == 1) {
+  else if (light.type == 1) {
     // directional light
     vec3 lightDir = normalize(-light.direction);
     vec3 diffuse = light.color * max(dot(lightDir, normal), 0.0f) * material.kd;
@@ -47,7 +47,7 @@ vec3 calcLight(Light light, vec3 normal, vec3 viewDir) {
     vec3 specular = light.color * pow(max(dot(viewDir, reflectDir), 0.0), material.ns) * material.ks;
     return light.intensity * (diffuse + specular);
   }
-  else if(light.type == 2) {
+  else if (light.type == 2) {
     // spotlight
     vec3 lightDir = normalize(light.position - fPosition);
     float theta = acos(-dot(lightDir, normalize(light.direction)));
@@ -61,17 +61,20 @@ vec3 calcLight(Light light, vec3 normal, vec3 viewDir) {
     float attenuation = 1.0f / (light.kc + light.kl * distance + light.kq * (distance * distance));
     return light.intensity * attenuation * (diffuse + specular);
   }
+  else {
+    return vec3(0.0f, 0.0f, 0.0f);
+  }
 }
 
 void main()
 {
-//  vec3 viewDir = normalize(viewPos - fPosition);
-//  vec3 normal = normalize(fNormal);
-//  vec3 color = vec3(0.0f, 0.0f, 0.0f);
-//  for(uint i = 0; i < light_count; ++i) {
-//    color += calcLight(light[i], normal, viewDir);
-//  }
-//  fColor = vec4(color, 1.0f);
-//  fColor *= texture(ourTexture, fTexCoord);
-  fColor = texture(ourTexture, fTexCoord);
+  vec3 viewDir = normalize(viewPos - fPosition);
+  vec3 normal = normalize(fNormal);
+  vec3 color = vec3(0.0f, 0.0f, 0.0f);
+  for (uint i = 0; i < light_count; ++i) {
+    color += calcLight(lights[i], normal, viewDir);
+  }
+  fColor = vec4(color, 1.0f);
+  fColor *= texture(ourTexture, fTexCoord);
+  //  fColor = dot(lights[0].position * lights[0].color, lights[0].direction + material.ka + material.kd + material.ks) * lights[0].type * (lights[0].intensity + lights[0].angle + lights[0].kc + lights[0].kl + lights[0].kq + light_count + material.ns) * texture(ourTexture, fTexCoord);
 }

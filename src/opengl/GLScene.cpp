@@ -14,6 +14,7 @@ using namespace std;
 GLScene::GLScene(QRect viewport, QObject *parent)
     : viewport_(viewport),
       camera_(new GLCamera({0.0f, 0.0f, 3.0f}, static_cast<float>(viewport.width()) / viewport.height())),
+      lights_(new GLLights),
       QObject(parent) {}
 
 void GLScene::Initialize(const std::vector<std::pair<std::string, std::string>> &models) {
@@ -50,6 +51,18 @@ void GLScene::Initialize(const std::vector<std::pair<std::string, std::string>> 
     obj->transform_.scale_ = get<3>(dobj);
     AddObject(obj);
   }
+
+  lights_->SetupShader(shader_, "Lights");
+  AddLight(GLLights::AddAmbientLight({1.0f, 1.0f, 1.0f}, 0.2f));
+  AddLight(GLLights::AddSpotLight({0.0f, 0.0f, 1.0f}, {0.0f, 0.0f, -1.0f}, {1.0f, 1.0f, 1.0f}, 1.0f, 10.47198f, 1.0f,
+                                  0.0f, 1.0f));
+
+  shader_->bind();
+  shader_->setUniformValue("material.ka", QVector3D(1.0f, 1.0f, 1.0f));
+  shader_->setUniformValue("material.kd", QVector3D(1.0f, 1.0f, 1.0f));
+  shader_->setUniformValue("material.ks", QVector3D(1.0f, 1.0f, 1.0f));
+  shader_->setUniformValue("material.ns", 10.0f);
+  shader_->release();
 }
 void GLScene::Draw() {
   QOpenGLExtraFunctions *f = QOpenGLContext::currentContext()->extraFunctions();
@@ -61,12 +74,17 @@ void GLScene::Draw() {
   shader_->bind();
   shader_->setUniformValue("view", camera_->GetViewMatrix());
   shader_->setUniformValue("projection", camera_->GetProjectionMatrix());
+  shader_->setUniformValue("viewPos", camera_->GetPosition());
   shader_->release();
+
+  lights_->Use();
 
   // draw
   for (auto &obj : objects_) {
     obj.second->Draw();
   }
+
+  lights_->Release();
 }
 
 // TODO

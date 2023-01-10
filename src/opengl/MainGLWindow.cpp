@@ -28,9 +28,7 @@
 //   return versioned_src;
 // }
 
-MainGLWindow::MainGLWindow(QWidget *parent) : scene_(new GLScene(geometry(), this)), QOpenGLWidget(parent) {
-  setFocusPolicy(Qt::StrongFocus);
-}
+MainGLWindow::MainGLWindow(QWidget *parent) : QOpenGLWidget(parent) { setFocusPolicy(Qt::StrongFocus); }
 
 MainGLWindow::~MainGLWindow() {
   makeCurrent();
@@ -38,6 +36,8 @@ MainGLWindow::~MainGLWindow() {
 }
 
 void MainGLWindow::initializeGL() {
+  scene_ = new GLScene(geometry(), this);
+
   // the same as glad init
   QOpenGLFunctions *f = QOpenGLContext::currentContext()->functions();
 

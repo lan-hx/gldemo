@@ -43,7 +43,7 @@ class MainGLWindow : public QOpenGLWidget, public QOpenGLExtraFunctions {
   void wheelEvent(QWheelEvent *event) override;
 
  private:
-  GLScene *scene_;
+  GLScene *scene_ = nullptr;
 
   QElapsedTimer time_;
 

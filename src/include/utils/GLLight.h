@@ -14,27 +14,27 @@ enum GLLightType { AmbientLight = 0, DirectionalLight = 1, SpotLight = 2 };
 
 struct GLLightStd140 {
   QVector3D position_{0.0f, 0.0f, 0.0f};
-  float padding1_;
+  uint8_t padding1_;
   QVector3D direction_{0.0f, 0.0f, 0.0f};
-  float padding2_;
+  uint8_t padding2_;
   QVector3D color_{1.0f, 1.0f, 1.0f};
-  float padding3_;
   float intensity_;
   float angle_;
   float kc_, kl_, kq_;
   GLLightType type_;
+  uint8_t padding3_;
   uint64_t padding4_;
 };
 
 static_assert(offsetof(GLLightStd140, position_) == 0);
 static_assert(offsetof(GLLightStd140, direction_) == 16);
 static_assert(offsetof(GLLightStd140, color_) == 32);
-static_assert(offsetof(GLLightStd140, intensity_) == 48);
-static_assert(offsetof(GLLightStd140, angle_) == 52);
-static_assert(offsetof(GLLightStd140, kc_) == 56);
-static_assert(offsetof(GLLightStd140, kl_) == 60);
-static_assert(offsetof(GLLightStd140, kq_) == 64);
-static_assert(offsetof(GLLightStd140, type_) == 68);
+static_assert(offsetof(GLLightStd140, intensity_) == 44);
+static_assert(offsetof(GLLightStd140, angle_) == 48);
+static_assert(offsetof(GLLightStd140, kc_) == 52);
+static_assert(offsetof(GLLightStd140, kl_) == 56);
+static_assert(offsetof(GLLightStd140, kq_) == 60);
+static_assert(offsetof(GLLightStd140, type_) == 64);
 static_assert(sizeof(GLLightStd140) == 80);
 
 using GLLight = GLLightStd140;
@@ -52,7 +52,7 @@ class GLLights : public QObject {
  public:
   explicit GLLights(uint64_t uniform_index = 0, size_t max_count = 20, QObject *parent = nullptr)
       : uniform_index_(uniform_index),
-        ub_(max_count * sizeof(GLLightStd140), this),
+        ub_(max_count * sizeof(GLLightStd140) + 16, this),
         max_count_(max_count),
         QObject(parent) {
     ub_.SetBindingPoint(uniform_index_);
@@ -60,6 +60,7 @@ class GLLights : public QObject {
 
   void SetupShader(QOpenGLShaderProgram *shader, const char *name) {
     GLUniformBuffer::SetShaderBindingPoint(shader, name, uniform_index_);
+    Update();
   }
 
   void Update() {
@@ -76,25 +77,35 @@ class GLLights : public QObject {
 
   const std::map<uint64_t, GLLight> &GetLights() { return lights_; }
 
-  void AddAmbientLight(QVector3D color, float intensity) {
+  uint64_t AddLight(GLLight light) {
     assert(lights_.size() < max_count_);
-    auto &light = (*lights_.emplace(id_inc_++, GLLightStd140{}).first).second;
+    auto id = lights_.emplace(id_inc_++, light).first->first;
+    Update();
+    return id;
+  }
+  void RemoveLight(uint64_t id) {
+    lights_.erase(id);
+    Update();
+  }
+
+  static GLLight AddAmbientLight(QVector3D color, float intensity) {
+    auto light = GLLightStd140{};
     light.type_ = AmbientLight;
     light.color_ = color;
     light.intensity_ = intensity;
+    return light;
   }
-  void AddDirectionalLight(QVector3D direction, QVector3D color, float intensity) {
-    assert(lights_.size() < max_count_);
-    auto &light = (*lights_.emplace(id_inc_++, GLLightStd140{}).first).second;
+  static GLLight AddDirectionalLight(QVector3D direction, QVector3D color, float intensity) {
+    auto light = GLLightStd140{};
     light.type_ = DirectionalLight;
     light.direction_ = direction;
     light.color_ = color;
     light.intensity_ = intensity;
+    return light;
   }
-  void AddSpotLight(QVector3D position, QVector3D direction, QVector3D color, float intensity, float angle, float kc,
-                    float kl, float kq) {
-    assert(lights_.size() < max_count_);
-    auto &light = (*lights_.emplace(id_inc_++, GLLightStd140{}).first).second;
+  static GLLight AddSpotLight(QVector3D position, QVector3D direction, QVector3D color, float intensity, float angle,
+                              float kc, float kl, float kq) {
+    auto light = GLLightStd140{};
     light.type_ = SpotLight;
     light.position_ = position;
     light.direction_ = direction;
@@ -104,8 +115,8 @@ class GLLights : public QObject {
     light.kc_ = kc;
     light.kl_ = kl;
     light.kq_ = kq;
+    return light;
   }
-  void RemoveLight(uint64_t id) { lights_.erase(id); }
 };
 
 #endif  // GLDEMO_APK_SRC_UTILS_GLLIGHT_H_
