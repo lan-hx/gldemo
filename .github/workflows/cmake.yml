@@ -76,7 +76,7 @@ jobs:
         if: runner.os == 'Linux'
         shell: bash
         run: |
-          apt install fuse libfuse2
+          sudo apt install fuse libfuse2
           cd ${{github.workspace}}/build
           wget --no-verbose "https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage"
           chmod a+x linuxdeploy*.AppImage
