@@ -109,6 +109,7 @@ class GLModel : public QObject {
   inline QOpenGLVertexArrayObject *GetVao() { return vao_; }
   inline QOpenGLTexture *GetTexture() { return texture_; }
   void SetMaterial(QOpenGLShaderProgram *shader);
+  inline const std::string &GetPath() { return path_; }
 };
 
 #endif  // GLDEMO_APK_SRC_OPENGL_GLMODEL_H_

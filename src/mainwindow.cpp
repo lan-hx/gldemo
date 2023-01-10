@@ -9,6 +9,7 @@
 #include "UI/about/about.h"
 #include "UI/camera/camerasettings.h"
 #include "UI/light/lightsettings.h"
+#include "UI/object/objectsettings.h"
 #include "ui_mainwindow.h"
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow) {
@@ -49,6 +50,11 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 
   connect(ui->actionlight, &QAction::triggered, [&]() {
     auto s = new LightSettings(main_gl_->scene_->GetLights(), this);
+    s->show();
+  });
+
+  connect(ui->actionobject, &QAction::triggered, [&]() {
+    auto s = new ObjectSettings(main_gl_->scene_, this);
     s->show();
   });
 

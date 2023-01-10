@@ -38,11 +38,13 @@ class GLScene : public QObject {
   ~GLScene() override;
 
   inline void AddModel(const std::string &name, GLModel *model) { models_.emplace(name, model); }
-  inline void AddObject(GLObject *obj) { objects_.emplace(obj->GetID(), obj); }
+  inline uint64_t AddObject(GLObject *obj) { return objects_.emplace(obj->GetID(), obj).first->first; }
+  inline void RemoveObject(uint64_t id) { objects_.erase(id); }
   inline void RemoveObject(GLObject *obj) { objects_.erase(obj->GetID()); }
+  inline auto GetObjects() -> decltype(objects_) & { return objects_; }
   inline void SetShader(QOpenGLShaderProgram *shader) { shader_ = shader; }
   inline QOpenGLShaderProgram *GetShader() { return shader_; }
-  inline auto GetModels() -> decltype(models_) { return models_; }
+  inline auto GetModels() -> decltype(models_) & { return models_; }
   inline GLModel *GetModel(const std::string &name) { return models_[name]; }
   inline GLCamera *GetCamera() { return camera_; }
   inline void SetViewPort(QRect viewport) {
@@ -64,13 +66,17 @@ class GLScene : public QObject {
  public:
   static constexpr auto DEFAULT_MODELS = {
       // obj path | texture path | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-      std::make_tuple(":/model/cube.obj", ":/texture/wall.jpg")};
+      std::make_tuple(":/model/cube.obj", ":/texture/wall.jpg"),
+      std::make_tuple(":/model/sphere.obj", ""),
+      std::make_tuple(":/model/bunny.obj", ""),
+      std::make_tuple(":/model/rose.obj", ""),
+  };
   static constexpr auto DEFAULT_OBJECTS = {
       // model | position | rotation | scale
       std::make_tuple(":/model/cube.obj", QVector3D{0.0f, 0.0f, 0.0f}, QVector3D{0.0f, 0.0f, 0.0f},
                       QVector3D{1.0f, 1.0f, 1.0f}),
-      // std::make_tuple(":/model/cube.obj", QVector3D{0.0f, 0.0f, 0.0f}, QVector3D{0.0f, 0.0f, 0.0f},
-      //                QVector3D{1.0f, 1.0f, 1.0f}),
+      std::make_tuple(":/model/sphere.obj", QVector3D{3.0f, 0.0f, 0.0f}, QVector3D{0.0f, 0.0f, 0.0f},
+                      QVector3D{1.0f, 1.0f, 1.0f}),
   };
 };
 

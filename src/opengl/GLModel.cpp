@@ -140,12 +140,19 @@ void GLModel::SetupVao(QOpenGLShaderProgram *shader) {
 }
 
 void GLModel::LoadTexture(const std::string &texture, const std::function<void(QOpenGLTexture *)> &setting) {
-  QImage img(texture.c_str());
-  Q_ASSERT(!img.isNull());
-  delete texture_;
-  texture_ = new QOpenGLTexture(img.mirrored());
+  if (texture.empty()) {
+    QImage img(":/texture/white.png");
+    Q_ASSERT(!img.isNull());
+    delete texture_;
+    texture_ = new QOpenGLTexture(img.mirrored());
+  } else {
+    QImage img(texture.c_str());
+    Q_ASSERT(!img.isNull());
+    delete texture_;
+    texture_ = new QOpenGLTexture(img.mirrored());
 
-  setting(texture_);
+    setting(texture_);
+  }
 }
 void GLModel::SetMaterial(QOpenGLShaderProgram *shader) {
   shader->bind();

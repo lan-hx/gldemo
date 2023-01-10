@@ -17,6 +17,8 @@
 class GLObject : public QObject {
   Q_OBJECT
 
+  friend class ObjectSettings;
+
  private:
   static uint64_t id_inc;
   const uint64_t id_;

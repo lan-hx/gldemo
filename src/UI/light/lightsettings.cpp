@@ -158,10 +158,10 @@ LightSettings::LightSettings(GLLights *lights, QWidget *parent)
     lights_->Update();
   });
 
-  UpdateIDs();
   ui->type->addItem(tr(LIGHT_TYPE_NAME[0]));
   ui->type->addItem(tr(LIGHT_TYPE_NAME[1]));
   ui->type->addItem(tr(LIGHT_TYPE_NAME[2]));
+  UpdateIDs();
 }
 
 LightSettings::~LightSettings() { delete ui; }

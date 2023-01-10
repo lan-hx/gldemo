@@ -4,6 +4,13 @@
 
 #include "mainwindow.h"
 
+#ifdef WIN32
+extern "C" {
+__declspec(dllexport) unsigned long NvOptimusEnablement = 1;         // NOLINT
+__declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;  // NOLINT
+}
+#endif
+
 int main(int argc, char *argv[]) {
   QApplication a(argc, argv);
 
