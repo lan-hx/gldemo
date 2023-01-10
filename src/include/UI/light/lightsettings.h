@@ -24,7 +24,7 @@ class LightSettings : public QDialog {
  private:
   Ui::LightSettings *ui;  // NOLINT
   GLLights *lights_;
-  uint64_t current_id_;
+  uint64_t current_id_{UINT64_MAX};
 };
 
 #endif  // LIGHTSETTINGS_H
