@@ -16,7 +16,12 @@
 #include <functional>
 #include <vector>
 
-struct GLMaterial {};
+struct GLMaterial {
+  QVector3D ka_;
+  QVector3D kd_;
+  QVector3D ks_;
+  float ns_;
+};
 
 struct GLVertex {
   float position_[3];
@@ -103,6 +108,7 @@ class GLModel : public QObject {
 
   inline QOpenGLVertexArrayObject *GetVao() { return vao_; }
   inline QOpenGLTexture *GetTexture() { return texture_; }
+  void SetMaterial(QOpenGLShaderProgram *shader);
 };
 
 #endif  // GLDEMO_APK_SRC_OPENGL_GLMODEL_H_

@@ -42,6 +42,8 @@ using GLLight = GLLightStd140;
 class GLLights : public QObject {
   Q_OBJECT
 
+  friend class LightSettings;
+
  private:
   uint64_t id_inc_ = 0;
   uint64_t uniform_index_;

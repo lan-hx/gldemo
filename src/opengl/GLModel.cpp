@@ -47,19 +47,25 @@ void GLModel::LoadObj(const string &path) {
   auto &materials = reader_.GetMaterials();
 
   materials_.clear();
-  materials_.resize(materials.size());
+  // materials_.resize(materials.size());
 
   std::vector<GLVertex> vertices;
   std::vector<uint32_t> indices;
   unordered_map<GLVertex, uint32_t> unique_vertices;
 
-  for (const auto &material : materials) {
-    GLMaterial m;
+  // for (const auto &material : materials) {
+  //   GLMaterial m;
+  //
+  //   // get needed material
+  //
+  //   materials_.emplace_back(m);
+  // }
 
-    // TODO: get needed material
-
-    materials_.emplace_back(m);
-  }
+  auto &default_material = materials_.emplace_back(GLMaterial());
+  default_material.ka_ = QVector3D(1.0f, 1.0f, 1.0f);
+  default_material.kd_ = QVector3D(1.0f, 1.0f, 1.0f);
+  default_material.ks_ = QVector3D(1.0f, 1.0f, 1.0f);
+  default_material.ns_ = 10.0f;
 
   for (const auto &shape : shapes) {
     for (const auto &index : shape.mesh.indices) {
@@ -140,4 +146,12 @@ void GLModel::LoadTexture(const std::string &texture, const std::function<void(Q
   texture_ = new QOpenGLTexture(img.mirrored());
 
   setting(texture_);
+}
+void GLModel::SetMaterial(QOpenGLShaderProgram *shader) {
+  shader->bind();
+  shader->setUniformValue("material.ka", materials_[0].ka_);
+  shader->setUniformValue("material.kd", materials_[0].kd_);
+  shader->setUniformValue("material.ks", materials_[0].ks_);
+  shader->setUniformValue("material.ns", materials_[0].ns_);
+  shader->release();
 }

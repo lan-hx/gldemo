@@ -61,15 +61,8 @@ void GLScene::Initialize(const std::vector<std::pair<std::string, std::string>> 
 
   lights_->SetupShader(shader_, "Lights");
   AddLight(GLLights::AddAmbientLight({1.0f, 1.0f, 1.0f}, 0.2f));
-  AddLight(GLLights::AddSpotLight({0.0f, 0.0f, 1.0f}, {0.0f, 0.0f, -1.0f}, {1.0f, 1.0f, 1.0f}, 1.0f, 10.47198f, 1.0f,
+  AddLight(GLLights::AddSpotLight({0.0f, 0.0f, 1.0f}, {0.0f, 0.0f, -1.0f}, {1.0f, 1.0f, 1.0f}, 1.0f, 1.047198f, 1.0f,
                                   0.0f, 1.0f));
-
-  shader_->bind();
-  shader_->setUniformValue("material.ka", QVector3D(1.0f, 1.0f, 1.0f));
-  shader_->setUniformValue("material.kd", QVector3D(1.0f, 1.0f, 1.0f));
-  shader_->setUniformValue("material.ks", QVector3D(1.0f, 1.0f, 1.0f));
-  shader_->setUniformValue("material.ns", 10.0f);
-  shader_->release();
 }
 void GLScene::Draw() {
   QOpenGLExtraFunctions *f = QOpenGLContext::currentContext()->extraFunctions();

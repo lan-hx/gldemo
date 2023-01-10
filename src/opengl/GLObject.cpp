@@ -11,6 +11,7 @@ uint64_t GLObject::id_inc = 0;
 // TODO
 void GLObject::Draw() {
   auto f = QOpenGLContext::currentContext()->functions();
+  model_->SetMaterial(shader_);
   model_->GetTexture()->bind();
   shader_->bind();
   model_->GetVao()->bind();

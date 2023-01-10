@@ -50,6 +50,7 @@ class GLScene : public QObject {
     camera_->SetAspect(static_cast<float>(viewport.width()) / viewport.height());
   }
   inline uint64_t AddLight(GLLight light) { return lights_->AddLight(light); }
+  inline GLLights *GetLights() { return lights_; }
 
   /**
    * load resource and default objects
