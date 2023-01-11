@@ -38,14 +38,14 @@ class GLScene : public QObject {
   ~GLScene() override;
 
   inline void AddModel(const std::string &name, GLModel *model) { models_.emplace(name, model); }
+  inline auto GetModels() -> decltype(models_) & { return models_; }
+  inline GLModel *GetModel(const std::string &name) { return models_[name]; }
   inline uint64_t AddObject(GLObject *obj) { return objects_.emplace(obj->GetID(), obj).first->first; }
   inline void RemoveObject(uint64_t id) { objects_.erase(id); }
   inline void RemoveObject(GLObject *obj) { objects_.erase(obj->GetID()); }
   inline auto GetObjects() -> decltype(objects_) & { return objects_; }
   inline void SetShader(QOpenGLShaderProgram *shader) { shader_ = shader; }
   inline QOpenGLShaderProgram *GetShader() { return shader_; }
-  inline auto GetModels() -> decltype(models_) & { return models_; }
-  inline GLModel *GetModel(const std::string &name) { return models_[name]; }
   inline GLCamera *GetCamera() { return camera_; }
   inline void SetViewPort(QRect viewport) {
     viewport_ = viewport;

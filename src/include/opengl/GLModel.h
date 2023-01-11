@@ -56,10 +56,12 @@ class GLModel : public QObject {
   Q_OBJECT
 
   friend class GLObject;
+  friend class ModelSettings;
 
  private:
   std::string path_;
   tinyobj::ObjReader reader_;
+  std::string texture_path_;
   QOpenGLTexture *texture_ = nullptr;
 
  private:
@@ -85,15 +87,15 @@ class GLModel : public QObject {
     delete vao_;
   }
 
-  void Load(const std::string &path, const std::string &texture, QOpenGLShaderProgram *shader);
-  void LoadObj(const std::string &path);
+  bool Load(const std::string &path, const std::string &texture, QOpenGLShaderProgram *shader);
+  bool LoadObj(const std::string &path);
   void SetupVao(QOpenGLShaderProgram *shader);
   /**
    * 加载材质
    * @param texture 材质文件位置
    * @param setting 自定义材质设置
    */
-  void LoadTexture(
+  bool LoadTexture(
       const std::string &texture, const std::function<void(QOpenGLTexture *)> &setting = [](QOpenGLTexture *texture) {
         // set warp
         texture->setWrapMode(QOpenGLTexture::DirectionS, QOpenGLTexture::Repeat);

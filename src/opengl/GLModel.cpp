@@ -10,18 +10,17 @@
 
 using namespace std;
 
-void GLModel::Load(const std::string &path, const std::string &texture, QOpenGLShaderProgram *shader) {
-  LoadObj(path);
-  auto &attrib = reader_.GetAttrib();
-  auto &shapes = reader_.GetShapes();
-  auto &materials = reader_.GetMaterials();
+bool GLModel::Load(const std::string &path, const std::string &texture, QOpenGLShaderProgram *shader) {
+  if (!LoadObj(path)) {
+    return false;
+  }
 
   SetupVao(shader);
 
-  LoadTexture(texture);
+  return LoadTexture(texture);
 }
 
-void GLModel::LoadObj(const string &path) {
+bool GLModel::LoadObj(const string &path) {
   path_ = path;
 
   // get obj string
@@ -35,7 +34,7 @@ void GLModel::LoadObj(const string &path) {
     if (!reader_.Error().empty()) {
       cerr << "[ERROR] TinyObjReader: " << reader_.Error();
     }
-    throw runtime_error(reader_.Error());
+    return false;
   }
   if (!reader_.Warning().empty()) {
     std::cout << "[WARNING] TinyObjReader: " << reader_.Warning();
@@ -99,6 +98,8 @@ void GLModel::LoadObj(const string &path) {
 
   vertices_ = vertices;
   indices_ = indices;
+
+  return true;
 }
 
 void GLModel::SetupVao(QOpenGLShaderProgram *shader) {
@@ -114,6 +115,7 @@ void GLModel::SetupVao(QOpenGLShaderProgram *shader) {
   if (vao_->create()) {
     vao_->bind();
   }
+  cerr << path_ << ": " << vao_->objectId() << endl;
   shader->bind();
   vbo_ = new QOpenGLBuffer;
   vbo_->create();
@@ -139,7 +141,8 @@ void GLModel::SetupVao(QOpenGLShaderProgram *shader) {
   vao_->release();
 }
 
-void GLModel::LoadTexture(const std::string &texture, const std::function<void(QOpenGLTexture *)> &setting) {
+bool GLModel::LoadTexture(const std::string &texture, const std::function<void(QOpenGLTexture *)> &setting) {
+  texture_path_ = texture;
   if (texture.empty()) {
     QImage img(":/texture/white.png");
     Q_ASSERT(!img.isNull());
@@ -147,12 +150,16 @@ void GLModel::LoadTexture(const std::string &texture, const std::function<void(Q
     texture_ = new QOpenGLTexture(img.mirrored());
   } else {
     QImage img(texture.c_str());
-    Q_ASSERT(!img.isNull());
+    if (img.isNull()) {
+      cerr << "[ERROR] image invalid, texture load failed: " << texture << endl;
+      return false;
+    }
     delete texture_;
     texture_ = new QOpenGLTexture(img.mirrored());
 
     setting(texture_);
   }
+  return true;
 }
 void GLModel::SetMaterial(QOpenGLShaderProgram *shader) {
   shader->bind();

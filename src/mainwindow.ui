@@ -66,6 +66,7 @@
     <addaction name="actioncamera"/>
     <addaction name="actionlight"/>
     <addaction name="actionobject"/>
+    <addaction name="actionmodel"/>
     <addaction name="separator"/>
     <addaction name="actionscreenshot"/>
    </widget>
@@ -122,6 +123,11 @@
   <action name="actionobject">
    <property name="text">
     <string>物体设置</string>
+   </property>
+  </action>
+  <action name="actionmodel">
+   <property name="text">
+    <string>模型设置</string>
    </property>
   </action>
  </widget>

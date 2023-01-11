@@ -9,6 +9,7 @@
 #include "UI/about/about.h"
 #include "UI/camera/camerasettings.h"
 #include "UI/light/lightsettings.h"
+#include "UI/model/modelsettings.h"
 #include "UI/object/objectsettings.h"
 #include "ui_mainwindow.h"
 
@@ -55,6 +56,11 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 
   connect(ui->actionobject, &QAction::triggered, [&]() {
     auto s = new ObjectSettings(main_gl_->scene_, this);
+    s->show();
+  });
+
+  connect(ui->actionmodel, &QAction::triggered, [&]() {
+    auto s = new ModelSettings(main_gl_->scene_, main_gl_, this);
     s->show();
   });
 
