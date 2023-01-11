@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 3.13)
-
 # Update qt variables
 message("QT_PREFIX_DIR: ${QT_PREFIX_DIR}")
 #list(APPEND CMAKE_PREFIX_PATH ${QT_PREFIX_DIR})
+message("VCPKG_DIR: ${VCPKG_DIR}")
 
 # vcpkg init
 if(DEFINED VCPKG_DIR AND NOT DEFINED CMAKE_TOOLCHAIN_FILE)
@@ -15,6 +15,8 @@ project(gldemo VERSION 0.1 LANGUAGES CXX)
 # CTest
 enable_testing()
 
+set(CMAKE_CXX_USE_RESPONSE_FILE_FOR_INCLUDES Off)
+
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 set(CMAKE_AUTOUIC ON)
@@ -25,6 +27,8 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_C_STANDARD 17)
 set(CMAKE_C_STANDARD_REQUIRED ON)
+
+set(Qt6_DIR ${QT_PREFIX_DIR}/lib/cmake/Qt6)
 
 find_package(Qt6 CONFIG REQUIRED COMPONENTS Core Gui Widgets OpenGL OpenGLWidgets)
 qt_standard_project_setup()
@@ -65,9 +69,11 @@ else()
     message(STATUS "found clang-tidy at ${CLANG_TIDY_BIN}")
 endif()
 
-set(CMAKE_CXX_CLANG_TIDY "${CLANG_TIDY_BIN}")
+if(NOT DEFINED DO_NOT_USE_CLANG_TIDY)
+    set(CMAKE_CXX_CLANG_TIDY "${CLANG_TIDY_BIN}")
+endif()
 
-find_package(glm CONFIG REQUIRED)
+#find_package(glm CONFIG REQUIRED)
 find_package(tinyobjloader CONFIG REQUIRED)
 
 include_directories(src/include test/include shader/include)

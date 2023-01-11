@@ -29,7 +29,7 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>CG大作业</string>
   </property>
   <widget class="QWidget" name="centralwidget"/>
   <widget class="QMenuBar" name="menubar">
@@ -64,6 +64,11 @@
     <addaction name="actionpause"/>
     <addaction name="actionstop"/>
     <addaction name="actioncamera"/>
+    <addaction name="actionlight"/>
+    <addaction name="actionobject"/>
+    <addaction name="actionmodel"/>
+    <addaction name="separator"/>
+    <addaction name="actionscreenshot"/>
    </widget>
    <addaction name="menu"/>
    <addaction name="menu_2"/>
@@ -71,31 +76,49 @@
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <action name="actionproject_info">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>项目信息</string>
    </property>
   </action>
   <action name="actionauthor">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>关于作者</string>
    </property>
   </action>
   <action name="actionopen">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>打开地图</string>
    </property>
   </action>
   <action name="actionexit">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>退出</string>
    </property>
   </action>
   <action name="actionpause">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>暂停</string>
    </property>
   </action>
   <action name="actionstop">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>停止</string>
    </property>
@@ -103,6 +126,26 @@
   <action name="actioncamera">
    <property name="text">
     <string>摄像机设置</string>
+   </property>
+  </action>
+  <action name="actionscreenshot">
+   <property name="text">
+    <string>截图(F12)</string>
+   </property>
+  </action>
+  <action name="actionlight">
+   <property name="text">
+    <string>光源设置</string>
+   </property>
+  </action>
+  <action name="actionobject">
+   <property name="text">
+    <string>物体设置</string>
+   </property>
+  </action>
+  <action name="actionmodel">
+   <property name="text">
+    <string>模型设置</string>
    </property>
   </action>
  </widget>

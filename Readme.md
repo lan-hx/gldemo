@@ -34,6 +34,12 @@ cmake --build . --target all
 cmake --build . --target gldemo_test
 ```
 
+5. 补充：如果编译失败，找不到QT头文件，是因为clang-tidy不支持response file，在CMakeLists.txt中加上下面的命令即可。
+
+```cmake
+set(CMAKE_CXX_USE_RESPONSE_FILE_FOR_INCLUDES Off)
+```
+
 ---
 
 #### shader管理
