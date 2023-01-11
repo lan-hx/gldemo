@@ -142,10 +142,10 @@ void GLModel::SetupVao(QOpenGLShaderProgram *shader) {
 }
 
 bool GLModel::LoadTexture(const std::string &texture, const std::function<void(QOpenGLTexture *)> &setting) {
-  texture_path_ = texture;
   if (texture.empty()) {
     QImage img(":/texture/white.png");
     Q_ASSERT(!img.isNull());
+    texture_path_ = texture;
     delete texture_;
     texture_ = new QOpenGLTexture(img.mirrored());
   } else {
@@ -154,6 +154,7 @@ bool GLModel::LoadTexture(const std::string &texture, const std::function<void(Q
       cerr << "[ERROR] image invalid, texture load failed: " << texture << endl;
       return false;
     }
+    texture_path_ = texture;
     delete texture_;
     texture_ = new QOpenGLTexture(img.mirrored());
 

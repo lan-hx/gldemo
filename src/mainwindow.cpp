@@ -1,8 +1,5 @@
 #include "mainwindow.h"
 
-//#include <QFileDialog>
-//#include <QMessageBox>
-//#include <QMovie>
 #include <QKeyEvent>
 #include <queue>
 

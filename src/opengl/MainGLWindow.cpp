@@ -92,7 +92,8 @@ void MainGLWindow::resizeGL(int w, int h) {
 }
 void MainGLWindow::keyPressEvent(QKeyEvent *event) {
   auto key = event->key();
-  if (key == Qt::Key_W || key == Qt::Key_S || key == Qt::Key_A || key == Qt::Key_D) {
+  if (key == Qt::Key_W || key == Qt::Key_S || key == Qt::Key_A || key == Qt::Key_D || key == Qt::Key_Space ||
+      key == Qt::Key_Shift) {
     keys_.emplace(static_cast<Qt::Key>(key));
   } else if (key == Qt::Key_F12) {
     TakeScreenShot();
@@ -103,7 +104,8 @@ void MainGLWindow::keyPressEvent(QKeyEvent *event) {
 
 void MainGLWindow::keyReleaseEvent(QKeyEvent *event) {
   auto key = event->key();
-  if (key == Qt::Key_W || key == Qt::Key_S || key == Qt::Key_A || key == Qt::Key_D) {
+  if (key == Qt::Key_W || key == Qt::Key_S || key == Qt::Key_A || key == Qt::Key_D || key == Qt::Key_Space ||
+      key == Qt::Key_Shift) {
     keys_.erase(static_cast<Qt::Key>(key));
   } else {
     event->ignore();

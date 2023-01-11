@@ -76,6 +76,10 @@ ModelSettings::ModelSettings(GLScene *scene, QOpenGLWidget *widget, QWidget *par
   });
   connect(ui->path_button, &QPushButton::clicked, [&]() {
     auto path = ui->path->text();
+    if (path.isEmpty()) {
+      QMessageBox::critical(this, tr("模型添加失败"), tr("没有指定模型路径"));
+      return;
+    }
     auto model = new GLModel;
     widget_->makeCurrent();
     if (model->Load(path.toStdString(), {}, scene_->GetShader())) {

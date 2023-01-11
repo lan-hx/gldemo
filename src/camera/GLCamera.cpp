@@ -34,6 +34,12 @@ void GLCamera::KeyboardCallback(Qt::Key key, float time_elapsed) {
     case Qt::Key_D:
       position_ += right_ * v;
       break;
+    case Qt::Key_Space:
+      position_ += up_ * v;
+      break;
+    case Qt::Key_Shift:
+      position_ -= up_ * v;
+      break;
     default:;
   }
   emit ValueChanged();
