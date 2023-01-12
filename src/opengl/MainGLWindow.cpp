@@ -56,13 +56,13 @@ void MainGLWindow::paintGL() {
   // qDebug() << num << ' ' << QDateTime::currentMSecsSinceEpoch();
   time_elapsed_ = time_.nsecsElapsed();
   auto camera = scene_->GetCamera();
-  emit UpdateInfo(time_elapsed_, (QString("frame %1 position (%2, %3, %4) pitch %5 yaw %6")
-                                      .arg(num)
-                                      .arg(camera->GetPosition().x())
-                                      .arg(camera->GetPosition().y())
-                                      .arg(camera->GetPosition().z())
-                                      .arg(camera->GetAngles().x())
-                                      .arg(camera->GetAngles().y()))
+  emit UpdateInfo(time_elapsed_, QString("frame %1 position (%2, %3, %4) pitch %5 yaw %6")
+                                     .arg(num)
+                                     .arg(camera->GetPosition().x(), 0, 'f', 2)
+                                     .arg(camera->GetPosition().y(), 0, 'f', 2)
+                                     .arg(camera->GetPosition().z(), 0, 'f', 2)
+                                     .arg(camera->GetAngles().x(), 0, 'f', 3)
+                                     .arg(camera->GetAngles().y(), 0, 'f', 3)
                                      .toUtf8());
   time_.restart();
 
