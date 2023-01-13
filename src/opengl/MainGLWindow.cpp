@@ -28,10 +28,7 @@
 //   return versioned_src;
 // }
 
-MainGLWindow::MainGLWindow(QWidget *parent) : QOpenGLWidget(parent) {
-  setFocusPolicy(Qt::StrongFocus);
-  setMouseTracking(true);
-}
+MainGLWindow::MainGLWindow(QWidget *parent) : QOpenGLWidget(parent) { setFocusPolicy(Qt::StrongFocus); }
 
 MainGLWindow::~MainGLWindow() {
   makeCurrent();
@@ -50,6 +47,10 @@ void MainGLWindow::initializeGL() {
   scene_->Initialize({});
 }
 
+// QVector3D camera_pos = QVector3D(0.0f, 0.0f, 3.0f);
+// QVector3D camera_front = QVector3D(0.0f, 0.0f, -1.0f);
+// QVector3D camera_up = QVector3D(0.0f, 1.0f, 0.0f);
+//
 void MainGLWindow::paintGL() {
   static int num = 0;
   ++num;
@@ -72,9 +73,14 @@ void MainGLWindow::paintGL() {
   for (auto &key : keys_) {
     camera->KeyboardCallback(key, time_elapsed_ / 1e9);
   }
-  if ((mouse_captured_ && (mouse_move_delta_.x() != 0 || mouse_move_delta_.y() != 0)) || mouse_scroll_delta_ != 0) {
-    camera->MouseCallback(mouse_move_delta_.x(), mouse_move_delta_.y(), mouse_scroll_delta_, time_elapsed_ / 1e9);
-    mouse_move_delta_ = {0, 0};
+  auto mouse_delta = mouse_pos_ - mouse_last_pos_;
+  if (mouse_is_pressed_) {
+    mouse_last_pos_ = mouse_pos_;
+  } else {
+    mouse_delta = {0, 0};
+  }
+  if (mouse_is_pressed_ || mouse_scroll_delta_ != 0) {
+    camera->MouseCallback(mouse_delta.x(), mouse_delta.y(), mouse_scroll_delta_, time_elapsed_ / 1e9);
     mouse_scroll_delta_ = 0;
   }
 
@@ -86,12 +92,6 @@ void MainGLWindow::resizeGL(int w, int h) {
 }
 void MainGLWindow::keyPressEvent(QKeyEvent *event) {
   auto key = event->key();
-  auto modifiers = event->modifiers();
-  if (((modifiers & Qt::ControlModifier) != 0u) && ((modifiers & Qt::AltModifier) != 0u)) {
-    unsetCursor();
-    mouse_captured_ = false;
-    mouse_move_delta_ = {0, 0};
-  }
   if (key == Qt::Key_W || key == Qt::Key_S || key == Qt::Key_A || key == Qt::Key_D || key == Qt::Key_Space ||
       key == Qt::Key_Shift) {
     keys_.emplace(static_cast<Qt::Key>(key));
@@ -112,35 +112,21 @@ void MainGLWindow::keyReleaseEvent(QKeyEvent *event) {
   }
 }
 
-void MainGLWindow::mouseMoveEvent(QMouseEvent *event) {
-  if (mouse_captured_) {
-    auto pos = event->pos();
-    auto center = QPoint(width() / 2, height() / 2);
-    mouse_move_delta_ += pos - center;
-    QCursor::setPos(mapToGlobal(center));
-  } else {
-    event->ignore();
-  }
-}
+void MainGLWindow::mouseMoveEvent(QMouseEvent *event) { mouse_pos_ = event->pos(); }
 
 void MainGLWindow::wheelEvent(QWheelEvent *event) { mouse_scroll_delta_ += event->angleDelta().y(); }
 void MainGLWindow::mousePressEvent(QMouseEvent *event) {
-  if (event->button() == Qt::LeftButton) {
-    if (!mouse_captured_) {
-      if (!mouse_release_hint_displayed_) {
-        QMessageBox::information(this, tr("提示"), tr("使用 Ctrl + Alt 来释放鼠标"));
-        mouse_release_hint_displayed_ = true;
-      }
-      mouse_captured_ = true;
-      setCursor(Qt::BlankCursor);
-      QCursor::setPos(mapToGlobal(QPoint(width() / 2, height() / 2)));
-      mouse_move_delta_ = {0, 0};
-    }
-  } else {
-    event->ignore();
+  if ((event->buttons() & Qt::LeftButton) != 0) {
+    mouse_is_pressed_ = true;
+    mouse_last_pos_ = event->pos();
+    mouse_pos_ = event->pos();
   }
 }
-void MainGLWindow::mouseReleaseEvent(QMouseEvent *event) { event->ignore(); }
+void MainGLWindow::mouseReleaseEvent(QMouseEvent *event) {
+  if ((event->buttons() & Qt::LeftButton) == 0) {
+    mouse_is_pressed_ = false;
+  }
+}
 void MainGLWindow::TakeScreenShot() {
   // save screenshot
   auto pixmap = grab();

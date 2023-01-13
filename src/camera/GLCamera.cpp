@@ -48,8 +48,8 @@ void GLCamera::KeyboardCallback(Qt::Key key, float time_elapsed) {
 void GLCamera::MouseCallback(float xoffset, float yoffset, float scroll_offset, float time_elapsed) {
   xoffset *= mouse_sensitivity_;
   yoffset *= mouse_sensitivity_;
-  yaw_ += xoffset;
-  pitch_ -= yoffset;
+  yaw_ -= xoffset;
+  pitch_ += yoffset;
   if (pitch_ > PI * 89 / 180) {
     pitch_ = static_cast<float>(PI * 89 / 180);
   }

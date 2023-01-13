@@ -51,9 +51,8 @@ class MainGLWindow : public QOpenGLWidget, public QOpenGLExtraFunctions {
 
   // io
   std::set<Qt::Key> keys_{};
-  bool mouse_captured_ = false;
-  bool mouse_release_hint_displayed_ = false;
-  QPoint mouse_move_delta_{0, 0};
+  bool mouse_is_pressed_ = false;
+  QPoint mouse_last_pos_{0, 0}, mouse_pos_{0, 0};
   float mouse_scroll_delta_ = 0;
 
  signals:
