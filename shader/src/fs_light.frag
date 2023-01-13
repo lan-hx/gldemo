@@ -1,4 +1,9 @@
-#version 330 core
+#version 300 es
+
+#ifdef GL_ES
+  precision mediump float;
+#endif
+
 in vec3 fPosition;
 in vec3 fNormal;
 in vec2 fTexCoord;

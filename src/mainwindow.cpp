@@ -82,5 +82,7 @@ void MainWindow::keyPressEvent(QKeyEvent *event) {
   auto key = event->key();
   if (key == Qt::Key_Q) {
     close();
+  } else {
+    event->ignore();
   }
 }

@@ -3,7 +3,12 @@
 
 
 const char fs_light_frag [] =
-"#version 330 core\n"
+"#version 300 es\n"
+"\n"
+"#ifdef GL_ES\n"
+"  precision mediump float;\n"
+"#endif\n"
+"\n"
 "in vec3 fPosition;\n"
 "in vec3 fNormal;\n"
 "in vec2 fTexCoord;\n"

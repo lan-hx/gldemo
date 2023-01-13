@@ -3,7 +3,7 @@
 
 
 const char vs_light_vert [] =
-"#version 330 core\n"
+"#version 300 es\n"
 "layout (location = 0) in vec3 aPosition;\n"
 "layout (location = 1) in vec3 aNormal;\n"
 "layout (location = 2) in vec2 aTexCoord;\n"

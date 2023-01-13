@@ -4,6 +4,8 @@
 
 #include "include/utils/GLUniformBuffer.h"
 
+#include <GLES3/gl3.h>
+
 #include <QOpenGLExtraFunctions>
 
 GLUniformBuffer::GLUniformBuffer(size_t bufferSize, QObject *parent) : QObject(parent) {

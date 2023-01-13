@@ -5,13 +5,6 @@ message("QT_PREFIX_DIR: ${QT_PREFIX_DIR}")
 list(APPEND CMAKE_PREFIX_PATH ${QT_PREFIX_DIR})
 #list(APPEND CMAKE_FIND_ROOT_PATH ${QT_PREFIX_DIR})
 
-set(ENV{ANDROID_NDK_HOME} ${ANDROID_NDK_HOME})
-set(ANDROID_NDK ${ANDROID_NDK_HOME})
-set(ENV{ANDROID_SDK} ${ANDROID_SDK_HOME})
-set(ANDROID_SDK_ROOT ${ANDROID_SDK_HOME})
-set(ENV{JAVA_HOME} ${JAVA_HOME})
-set(ANDROID_USE_LLVM true)
-
 # vcpkg init
 if(DEFINED VCPKG_DIR AND NOT DEFINED CMAKE_TOOLCHAIN_FILE)
     set(CMAKE_TOOLCHAIN_FILE ${VCPKG_DIR}/scripts/buildsystems/vcpkg.cmake CACHE STRING "Vcpkg toolchain file")
@@ -62,7 +55,8 @@ if(NOT DEFINED NO_CLANG_FORMAT)
     message(STATUS "run clang-format on: ${ALL_SOURCE_FILES}")
 endif()
 
-find_package(glm CONFIG REQUIRED)
+#find_package(glm CONFIG REQUIRED)
+find_package(tinyobjloader CONFIG REQUIRED)
 
 include_directories(src/include test/include shader/include)
 
