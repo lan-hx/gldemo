@@ -34,6 +34,12 @@ void GLCamera::KeyboardCallback(Qt::Key key, float time_elapsed) {
     case Qt::Key_D:
       position_ += right_ * v;
       break;
+    case Qt::Key_Space:
+      position_ += up_ * v;
+      break;
+    case Qt::Key_Shift:
+      position_ -= up_ * v;
+      break;
     default:;
   }
   emit ValueChanged();
@@ -42,13 +48,13 @@ void GLCamera::KeyboardCallback(Qt::Key key, float time_elapsed) {
 void GLCamera::MouseCallback(float xoffset, float yoffset, float scroll_offset, float time_elapsed) {
   xoffset *= mouse_sensitivity_;
   yoffset *= mouse_sensitivity_;
-  yaw_ -= xoffset;
-  pitch_ += yoffset;
+  yaw_ += xoffset;
+  pitch_ -= yoffset;
   if (pitch_ > PI * 89 / 180) {
-    pitch_ = PI * 89 / 180;
+    pitch_ = static_cast<float>(PI * 89 / 180);
   }
   if (pitch_ < -PI * 89 / 180) {
-    pitch_ = -PI * 89 / 180;
+    pitch_ = static_cast<float>(-PI * 89 / 180);
   }
   zoom_ += scroll_offset * mouse_sensitivity_;
   if (zoom_ < 1.0f) {
@@ -60,4 +66,11 @@ void GLCamera::MouseCallback(float xoffset, float yoffset, float scroll_offset, 
 
   Update();
   emit ValueChanged();
+}
+
+QMatrix4x4 GLCamera::GetProjectionMatrix() const {
+  QMatrix4x4 projection;
+  projection.setToIdentity();
+  projection.perspective(fovy_, aspect_, znear_, zfar_);
+  return projection;
 }

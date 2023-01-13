@@ -14,7 +14,7 @@
 #include <QtOpenGLWidgets/QOpenGLWidget>
 #include <set>
 
-#include "camera/GLCamera.h"
+#include "opengl/GLScene.h"
 
 class MainWindow;
 
@@ -26,6 +26,8 @@ class MainGLWindow : public QOpenGLWidget, public QOpenGLExtraFunctions {
  public:
   explicit MainGLWindow(QWidget *parent = nullptr);
   ~MainGLWindow() override;
+
+  void TakeScreenShot();
 
  protected:
   void initializeGL() override;
@@ -41,30 +43,17 @@ class MainGLWindow : public QOpenGLWidget, public QOpenGLExtraFunctions {
   void wheelEvent(QWheelEvent *event) override;
 
  private:
-  QOpenGLVertexArrayObject *vao_ =
-      nullptr;                    // Vertex Array Object: array of vertex attrib and bounded VBO and bounded EBO
-  QOpenGLBuffer *vbo_ = nullptr;  // Vertex Buffer Objects
-  QOpenGLBuffer *ebo_ = nullptr;  // Element Buffer Object / Index Buffer Object
-
-  QOpenGLShaderProgram *program_ = nullptr;
-
-  // QMatrix4x4 model_;
-  QMatrix4x4 view_;
-  QMatrix4x4 projection_;
-
-  QOpenGLTexture *texture_ = nullptr;
+  GLScene *scene_ = nullptr;
 
   QElapsedTimer time_;
 
   int64_t time_elapsed_;  // in ns
 
-  // camera
-  GLCamera *camera_ = nullptr;
-
   // io
   std::set<Qt::Key> keys_{};
-  bool mouse_is_pressed_ = false;
-  QPoint mouse_last_pos_{0, 0}, mouse_pos_{0, 0};
+  bool mouse_captured_ = false;
+  bool mouse_release_hint_displayed_ = false;
+  QPoint mouse_move_delta_{0, 0};
   float mouse_scroll_delta_ = 0;
 
  signals:

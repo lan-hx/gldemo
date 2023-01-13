@@ -1,13 +1,13 @@
 #include "mainwindow.h"
 
-//#include <QFileDialog>
-//#include <QMessageBox>
-//#include <QMovie>
 #include <QKeyEvent>
 #include <queue>
 
 #include "UI/about/about.h"
 #include "UI/camera/camerasettings.h"
+#include "UI/light/lightsettings.h"
+#include "UI/model/modelsettings.h"
+#include "UI/object/objectsettings.h"
 #include "ui_mainwindow.h"
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow) {
@@ -42,9 +42,26 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
   });
 
   connect(ui->actioncamera, &QAction::triggered, [&]() {
-    auto s = new CameraSettings(main_gl_->camera_, this);
+    auto s = new CameraSettings(main_gl_->scene_->GetCamera(), this);
     s->show();
   });
+
+  connect(ui->actionlight, &QAction::triggered, [&]() {
+    auto s = new LightSettings(main_gl_->scene_->GetLights(), this);
+    s->show();
+  });
+
+  connect(ui->actionobject, &QAction::triggered, [&]() {
+    auto s = new ObjectSettings(main_gl_->scene_, this);
+    s->show();
+  });
+
+  connect(ui->actionmodel, &QAction::triggered, [&]() {
+    auto s = new ModelSettings(main_gl_->scene_, main_gl_, this);
+    s->show();
+  });
+
+  connect(ui->actionscreenshot, &QAction::triggered, [&]() { main_gl_->TakeScreenShot(); });
 
   // connect(ui->actionproject_info, &QAction::triggered, [&]() {
   //   game_ui_->Pause();

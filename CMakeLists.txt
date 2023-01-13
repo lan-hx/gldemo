@@ -21,7 +21,10 @@ endif()
 
 project(gldemo VERSION 0.1 LANGUAGES CXX)
 
-include(android/AddQtAndroidApk.cmake)
+# CTest
+enable_testing()
+
+set(CMAKE_CXX_USE_RESPONSE_FILE_FOR_INCLUDES Off)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
@@ -55,7 +58,7 @@ if(NOT DEFINED NO_CLANG_FORMAT)
     add_custom_target(clang_format ALL
             COMMAND ${CLANG_FORMAT_BIN} -i
             ${ALL_SOURCE_FILES}
-            )
+    )
     message(STATUS "run clang-format on: ${ALL_SOURCE_FILES}")
 endif()
 
@@ -65,6 +68,8 @@ include_directories(src/include test/include shader/include)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+
+ADD_SUBDIRECTORY(shader)
 
 ADD_SUBDIRECTORY(src ${CMAKE_BINARY_DIR}/src)
 ADD_SUBDIRECTORY(res)

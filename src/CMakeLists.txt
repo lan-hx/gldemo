@@ -16,7 +16,7 @@ qt_add_executable(gldemo ${GLDEMO_SOURCE} ${GLDEMO_SOURCE_MAIN})
 qt_finalize_executable(gldemo)
 add_qt_android_apk(gldemo_apk gldemo)
 
-TARGET_LINK_LIBRARIES(gldemo PRIVATE Qt6::Core Qt6::Widgets Qt6::OpenGL Qt6::OpenGLWidgets Qt6::Gui glm::glm)
+TARGET_LINK_LIBRARIES(gldemo PRIVATE Qt6::Core Qt6::Widgets Qt6::OpenGL Qt6::OpenGLWidgets Qt6::Gui tinyobjloader::tinyobjloader)
 set_target_properties(gldemo PROPERTIES
         MACOSX_BUNDLE_GUI_IDENTIFIER huaji
         MACOSX_BUNDLE_BUNDLE_VERSION ${PROJECT_VERSION}
