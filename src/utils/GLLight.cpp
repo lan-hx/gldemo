@@ -4,6 +4,8 @@
 
 #include "utils/GLLight.h"
 
+#include <GLES3/gl3.h>
+
 #include <QOpenGLExtraFunctions>
 
 #define ASSERT(expr, info) assert(expr &&info)
