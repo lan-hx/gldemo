@@ -6,7 +6,7 @@
 
 #include <QOpenGLExtraFunctions>
 
-#define ASSERT(expr, info) assert(expr &&info)
+#define ASSERT(expr, info) assert((expr) && (info))
 
 void GLLights::CheckOffsets(QOpenGLShaderProgram *shader) {
   static constexpr const char *names[] = {
