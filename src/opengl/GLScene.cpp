@@ -59,6 +59,7 @@ void GLScene::Initialize(const std::vector<std::pair<std::string, std::string>> 
     AddObject(obj);
   }
 
+  lights_->CheckOffsets(shader_);
   lights_->SetupShader(shader_, "Lights");
   AddLight(GLLights::AddAmbientLight({1.0f, 1.0f, 1.0f}, 0.2f));
   AddLight(GLLights::AddSpotLight({0.0f, 0.0f, 1.0f}, {0.0f, 0.0f, -1.0f}, {1.0f, 1.0f, 1.0f}, 1.0f, 1.047198f, 1.0f,

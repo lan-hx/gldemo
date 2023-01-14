@@ -33,12 +33,12 @@ bool GLModel::LoadObj(const string &path) {
 
   if (!reader_.ParseFromString(obj_file.readAll().toStdString(), "")) {
     if (!reader_.Error().empty()) {
-      cerr << "[ERROR] TinyObjReader: " << reader_.Error();
+      cerr << "[ERROR] load \"" << path << "\" TinyObjReader: " << reader_.Error() << flush;
     }
     return false;
   }
   if (!reader_.Warning().empty()) {
-    std::cout << "[WARNING] TinyObjReader: " << reader_.Warning();
+    std::cout << "[WARNING] load \"" << path << "\" TinyObjReader: " << reader_.Warning() << flush;
   }
   obj_file.close();
 
@@ -116,7 +116,6 @@ void GLModel::SetupVao(QOpenGLShaderProgram *shader) {
   if (vao_->create()) {
     vao_->bind();
   }
-  cerr << path_ << ": " << vao_->objectId() << endl;
   shader->bind();
   vbo_ = new QOpenGLBuffer;
   vbo_->create();
