@@ -3,6 +3,7 @@
 
 #include <QLabel>
 #include <QMainWindow>
+#include <QPushButton>
 
 #include "opengl/MainGLWindow.h"
 
@@ -26,9 +27,14 @@ class MainWindow : public QMainWindow {
   QLabel *frame_latency_ = nullptr;
   MainGLWindow *main_gl_ = nullptr;
 
+  // android
+  QPushButton *button_[4];
+  // QDockWidget *dock_;
+
  protected:
   void keyPressEvent(QKeyEvent *event) override;
   void paintEvent(QPaintEvent *event) override;
+  void resizeEvent(QResizeEvent *event) override;
 
  signals:
 };
