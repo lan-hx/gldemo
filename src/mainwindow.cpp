@@ -25,9 +25,9 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 
   main_gl_ = new MainGLWindow(this);
   setCentralWidget(main_gl_);
-  main_gl_->setFixedSize(800, 600);
-  adjustSize();
-  setFixedSize(width(), height());
+  // main_gl_->setFixedSize(800, 600);
+  // adjustSize();
+  // setFixedSize(width(), height());
 
   connect(main_gl_, &MainGLWindow::UpdateInfo, [&](int64_t nsec, const char *debug_info) {
     static std::deque<int64_t> fps_indecator;
