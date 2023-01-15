@@ -13,7 +13,7 @@ using namespace std;
 
 GLScene::GLScene(QRect viewport, QObject *parent)
     : viewport_(viewport),
-      camera_(new GLCamera({0.0f, 0.0f, 3.0f}, static_cast<float>(viewport.width()) / viewport.height())),
+      camera_(new GLCamera({-1.0f, 2.0f, 0.0f}, static_cast<float>(viewport.width()) / viewport.height())),
       lights_(new GLLights),
       QObject(parent) {}
 
@@ -60,17 +60,15 @@ void GLScene::Initialize(const std::vector<std::pair<std::string, std::string>> 
     AddObject(obj);
   }
 
-<<<<<<< HEAD
   camera_->bind_object(major_object_);
 
   // major_object_ = objects_[0];
 
-=======
   lights_->CheckOffsets(shader_);
->>>>>>> origin/fancy
+
   lights_->SetupShader(shader_, "Lights");
   AddLight(GLLights::AddAmbientLight({1.0f, 1.0f, 1.0f}, 0.2f));
-  AddLight(GLLights::AddSpotLight({0.0f, 0.0f, 1.0f}, {0.0f, 0.0f, -1.0f}, {1.0f, 1.0f, 1.0f}, 1.0f, 1.047198f, 1.0f,
+  AddLight(GLLights::AddSpotLight({0.0f, 4.0f, 1.0f}, {0.0f, 0.0f, -1.0f}, {1.0f, 1.0f, 1.0f}, 3.0f, 1.047198f, 1.0f,
                                   0.0f, 1.0f));
 }
 void GLScene::Draw() {
