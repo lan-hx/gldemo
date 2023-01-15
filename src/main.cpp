@@ -5,6 +5,8 @@
 
 #include "mainwindow.h"
 
+bool camera_reverse;
+
 #ifdef WIN32
 extern "C" {
 __declspec(dllexport) unsigned long NvOptimusEnablement = 1;         // NOLINT
@@ -34,6 +36,9 @@ int main(int argc, char *argv[]) {
   }
 
   QSurfaceFormat::setDefaultFormat(fmt);
+
+  ret = QMessageBox::information(nullptr, "视角反转", "是否反转X轴和Y轴？", QMessageBox::Yes | QMessageBox::No);
+  camera_reverse = ret & QMessageBox::Yes;
 
   MainWindow window;
   window.show();

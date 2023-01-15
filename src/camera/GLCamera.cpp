@@ -6,6 +6,8 @@
 
 #include <cmath>
 
+extern bool camera_reverse;
+
 QMatrix4x4 GLCamera::GetViewMatrix() const {
   QMatrix4x4 view;
   view.lookAt(position_, position_ + front_, up_);
@@ -48,8 +50,13 @@ void GLCamera::KeyboardCallback(Qt::Key key, float time_elapsed) {
 void GLCamera::MouseCallback(float xoffset, float yoffset, float scroll_offset, float time_elapsed) {
   xoffset *= mouse_sensitivity_;
   yoffset *= mouse_sensitivity_;
-  yaw_ -= xoffset;
-  pitch_ += yoffset;
+  if (camera_reverse) {
+    yaw_ -= xoffset;
+    pitch_ += yoffset;
+  } else {
+    yaw_ += xoffset;
+    pitch_ -= yoffset;
+  }
   if (pitch_ > PI * 89 / 180) {
     pitch_ = static_cast<float>(PI * 89 / 180);
   }
