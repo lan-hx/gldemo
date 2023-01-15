@@ -28,6 +28,9 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_C_STANDARD 17)
 set(CMAKE_C_STANDARD_REQUIRED ON)
 
+set(CMAKE_INSTALL_PREFIX "${CMAKE_BINARY_DIR}/bin")
+message("install dir: ${CMAKE_INSTALL_PREFIX}")
+
 set(Qt6_DIR ${QT_PREFIX_DIR}/lib/cmake/Qt6)
 
 find_package(Qt6 CONFIG REQUIRED COMPONENTS Core Gui Widgets OpenGL OpenGLWidgets)
