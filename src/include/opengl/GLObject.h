@@ -31,8 +31,13 @@ class GLObject : public QObject {
   GLBoundingbox boundingbox_;
 
  public:
-  explicit GLObject(GLModel *model, QOpenGLShaderProgram *shader, QObject *parent = nullptr)
-      : id_(++id_inc), model_(model), shader_(shader), QObject(parent), boundingbox_(model->GetVertices()) {}
+  explicit GLObject(GLModel *model, QOpenGLShaderProgram *shader, bool is_major = false, QObject *parent = nullptr)
+      : id_(++id_inc),
+        model_(model),
+        shader_(shader),
+        QObject(parent),
+        boundingbox_(model->GetVertices(), is_major ? GLBoundingbox::BoundingboxType::SPHERE_BOUNDINGBOX
+                                                    : GLBoundingbox::BoundingboxType::CUBE_BOUNDINGBOX) {}
   ~GLObject() override = default;
 
  public:

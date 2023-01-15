@@ -50,14 +50,21 @@ void GLScene::Initialize(const std::vector<std::pair<std::string, std::string>> 
   }
 
   // load objects
+  bool major_loaded = false;
   for (const auto &dobj : DEFAULT_OBJECTS) {
     auto pmodel = GetModel(get<0>(dobj));
-    auto obj = new GLObject(pmodel, shader_);
+    auto obj = new GLObject(pmodel, shader_, !major_loaded);
+    if (!major_loaded) {
+      major_loaded = true;
+      major_object_ = obj;
+    }
     obj->transform_.position_ = get<1>(dobj);
     obj->transform_.SetAngles(get<1>(dobj));
     obj->transform_.scale_ = get<3>(dobj);
     AddObject(obj);
   }
+
+  // major_object_ = objects_[0];
 
   lights_->SetupShader(shader_, "Lights");
   AddLight(GLLights::AddAmbientLight({1.0f, 1.0f, 1.0f}, 0.2f));

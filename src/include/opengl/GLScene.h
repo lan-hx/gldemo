@@ -75,9 +75,11 @@ class GLScene : public QObject {
   };
   static constexpr auto DEFAULT_OBJECTS = {
       // model | position | rotation | scale
+      std::make_tuple(":/model/sphere.obj", QVector3D{0.0f, 0.0f, 3.0f}, QVector3D{0.0f, 0.0f, 0.0f},
+                      QVector3D{0.2f, 0.2f, 0.2f}),
       std::make_tuple(":/model/cube.obj", QVector3D{0.0f, 0.0f, 0.0f}, QVector3D{0.0f, 0.0f, 0.0f},
                       QVector3D{1.0f, 1.0f, 1.0f}),
-      std::make_tuple(":/model/sphere.obj", QVector3D{3.0f, 0.0f, 0.0f}, QVector3D{0.0f, 0.0f, 0.0f},
+      std::make_tuple(":/model/cube.obj", QVector3D{3.0f, 3.0f, 0.0f}, QVector3D{0.0f, 0.0f, 0.0f},
                       QVector3D{1.0f, 1.0f, 1.0f}),
   };
 };
