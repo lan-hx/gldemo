@@ -43,7 +43,7 @@ class GLObject : public QObject {
  public:
   inline uint64_t GetID() const { return id_; }
   void Draw();
-  bool CollideWith(const GLObject *obj);
+  bool CollideWith(GLObject *obj);
 };
 
 #endif  // GLDEMO_APK_SRC_OPENGL_GLOBJECT_H_

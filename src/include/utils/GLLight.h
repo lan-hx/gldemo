@@ -119,6 +119,8 @@ class GLLights : public QObject {
     light.kq_ = kq;
     return light;
   }
+
+  static void CheckOffsets(QOpenGLShaderProgram *shader);
 };
 
 #endif  // GLDEMO_APK_SRC_UTILS_GLLIGHT_H_

@@ -89,6 +89,7 @@ class GLModel : public QObject {
 
   bool Load(const std::string &path, const std::string &texture, QOpenGLShaderProgram *shader);
   bool LoadObj(const std::string &path);
+  bool SaveObj(const std::string &path);
   void SetupVao(QOpenGLShaderProgram *shader);
   /**
    * 加载材质
