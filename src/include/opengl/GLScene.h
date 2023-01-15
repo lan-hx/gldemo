@@ -31,6 +31,8 @@ class GLScene : public QObject {
   GLCamera *camera_;
   GLLights *lights_;
 
+  GLObject *major_object_;
+
  public:
   explicit GLScene(QRect viewport, QObject *parent = nullptr);
   GLScene(const GLScene &r) = delete;

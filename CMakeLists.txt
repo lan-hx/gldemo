@@ -1,4 +1,13 @@
 cmake_minimum_required(VERSION 3.13)
+
+list(APPEND CMAKE_PREFIX_PATH "C:/Qt/6.4.1/mingw_64")
+
+if (NOT DEFINED QT_PREFIX_DIR)
+    set(QT_PREFIX_DIR C:/Qt/6.4.1/mingw_64)
+endif()
+if (NOT DEFINED VCPKG_DIR)
+    set(VCPKG_DIR E:/ComputerGraphics/gldemo/vcpkg)
+endif()
 # Update qt variables
 message("QT_PREFIX_DIR: ${QT_PREFIX_DIR}")
 #list(APPEND CMAKE_PREFIX_PATH ${QT_PREFIX_DIR})
@@ -74,6 +83,9 @@ if(NOT DEFINED DO_NOT_USE_CLANG_TIDY)
 endif()
 
 #find_package(glm CONFIG REQUIRED)
+
+##set(tinyobjloader_DIR E:/ComputerGraphics/gldemo/vcpkg/packages/tinyobjloader_x86-windows/share/tinyobjloader)
+list(APPEND CMAKE_PREFIX_PATH "E:/ComputerGraphics/gldemo/vcpkg/packages/tinyobjloader_x64-windows")
 find_package(tinyobjloader CONFIG REQUIRED)
 
 include_directories(src/include test/include shader/include)

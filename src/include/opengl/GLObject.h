@@ -8,6 +8,7 @@
 #include <QObject>
 #include <QOpenGLShaderProgram>
 
+#include "boundingbox/GLBoundingbox.h"
 #include "opengl/GLModel.h"
 #include "utils/GLTransform.h"
 
@@ -27,15 +28,17 @@ class GLObject : public QObject {
 
  public:
   GLTransform transform_;
+  GLBoundingbox boundingbox_;
 
  public:
   explicit GLObject(GLModel *model, QOpenGLShaderProgram *shader, QObject *parent = nullptr)
-      : id_(++id_inc), model_(model), shader_(shader), QObject(parent) {}
+      : id_(++id_inc), model_(model), shader_(shader), QObject(parent), boundingbox_(model->GetVertices()) {}
   ~GLObject() override = default;
 
  public:
   inline uint64_t GetID() const { return id_; }
   void Draw();
+  bool CollideWith(const GLObject *obj);
 };
 
 #endif  // GLDEMO_APK_SRC_OPENGL_GLOBJECT_H_
