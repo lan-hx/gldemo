@@ -21,7 +21,8 @@ file(GENERATE OUTPUT ${qt_deploy_script} CONTENT "
 include(\"${QT_DEPLOY_SUPPORT}\")
 qt_deploy_runtime_dependencies(
     EXECUTABLE \"$<TARGET_FILE_NAME:gldemo>\"
-    BIN_DIR \"\"
+    BIN_DIR .
+    LIB_DIR .
     GENERATE_QT_CONF
 )")
 install(TARGETS gldemo
@@ -45,6 +46,9 @@ add_dependencies(gldemo clang_format shader)
 #    add_custom_command(TARGET gldemo POST_BUILD
 #            COMMAND ${QT_DEPLOY_EXE} $<TARGET_FILE:gldemo>)
 #endif()
+
+add_custom_command(TARGET gldemo POST_BUILD
+        COMMAND echo debug: build to $<TARGET_FILE:gldemo>)
 
 add_custom_target(deploy
         COMMAND ${CMAKE_COMMAND} --install ${CMAKE_BINARY_DIR} --config $<CONFIG>
