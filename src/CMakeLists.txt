@@ -1,4 +1,6 @@
-cmake_minimum_required(VERSION 3.13)
+cmake_minimum_required(VERSION 3.14)
+
+cmake_policy(SET CMP0087 NEW)
 
 FILE(GLOB_RECURSE GLDEMO_SOURCE
         ${PROJECT_SOURCE_DIR}/src/**/*.cpp
@@ -14,7 +16,7 @@ message(STATUS "find sources: ${GLDEMO_SOURCE} ${GLDEMO_SOURCE_MAIN}")
 #ADD_EXECUTABLE(gldemo ${GLDEMO_SOURCE} ${GLDEMO_SOURCE_MAIN})
 qt_add_executable(gldemo ${GLDEMO_SOURCE} ${GLDEMO_SOURCE_MAIN})
 
-set(qt_deploy_script "${CMAKE_CURRENT_BINARY_DIR}/deploy_gldemo.cmake")
+set(qt_deploy_script "${CMAKE_CURRENT_BINARY_DIR}/deploy_gldemo_$<CONFIG>.cmake")
 file(GENERATE OUTPUT ${qt_deploy_script} CONTENT "
 include(\"${QT_DEPLOY_SUPPORT}\")
 qt_deploy_runtime_dependencies(
@@ -44,6 +46,7 @@ add_dependencies(gldemo clang_format shader)
 #            COMMAND ${QT_DEPLOY_EXE} $<TARGET_FILE:gldemo>)
 #endif()
 
-add_custom_command(TARGET gldemo POST_BUILD
+add_custom_target(deploy
         COMMAND ${CMAKE_COMMAND} --install ${CMAKE_BINARY_DIR} --config $<CONFIG>
         )
+add_dependencies(deploy gldemo)
