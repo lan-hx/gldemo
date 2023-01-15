@@ -57,12 +57,14 @@ void GLCamera::MouseCallback(float xoffset, float yoffset, float scroll_offset, 
     pitch_ = static_cast<float>(-PI * 89 / 180);
   }
   zoom_ += scroll_offset * mouse_sensitivity_;
+  bind_object_->transform_.SetAngles(0.0f, -yaw_ * 180.0f / PI, 0.0f);
   if (zoom_ < 1.0f) {
     zoom_ = 1.0f;
   }
   if (zoom_ > 60.0f) {
     zoom_ = 60.0f;
   }
+  position_ = bind_object_->transform_.position_ - 2.0 * front_;
 
   Update();
   emit ValueChanged();
@@ -73,4 +75,14 @@ QMatrix4x4 GLCamera::GetProjectionMatrix() const {
   projection.setToIdentity();
   projection.perspective(fovy_, aspect_, znear_, zfar_);
   return projection;
+}
+
+void GLCamera::bind_object(GLObject *obj) { bind_object_ = obj; }
+
+void GLCamera::move(QVector3D dir, float time_elapsed) {
+  QVector3D displacement = movement_speed_ * time_elapsed * dir;
+  bind_object_->transform_.position_ += displacement;
+  // position_ += displacement;
+  position_ = bind_object_->transform_.position_ - 2.0 * front_;
+  emit ValueChanged();
 }

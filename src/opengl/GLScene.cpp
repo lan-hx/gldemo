@@ -64,6 +64,8 @@ void GLScene::Initialize(const std::vector<std::pair<std::string, std::string>> 
     AddObject(obj);
   }
 
+  camera_->bind_object(major_object_);
+
   // major_object_ = objects_[0];
 
   lights_->SetupShader(shader_, "Lights");
@@ -104,4 +106,57 @@ GLScene::~GLScene() {
     delete m.second;
   }
   delete shader_;
+}
+
+void GLScene::KeyboardCallback(Qt::Key key, float time_elapsed) {
+  QVector3D dir;
+  switch (key) {
+    case Qt::Key_W:
+      dir = major_object_->transform_.GetRight().normalized();
+      break;
+    case Qt::Key_S:
+      dir = -major_object_->transform_.GetRight().normalized();
+      break;
+    case Qt::Key_A:
+      dir = major_object_->transform_.GetFront().normalized();
+      break;
+    case Qt::Key_D:
+      dir = -major_object_->transform_.GetFront().normalized();
+      break;
+    case Qt::Key_Space:
+      dir = major_object_->transform_.GetUp().normalized();
+      break;
+    case Qt::Key_Shift:
+      dir = -major_object_->transform_.GetUp().normalized();
+      break;
+    default:;
+  }
+  // camera_->move(dir, time_elapsed);
+  bool collision = true;
+  while (collision) {
+    if (dir.length() < 0.05f) break;
+    camera_->move(dir, time_elapsed);
+    collision = false;
+    for (auto &iter : objects_) {
+      auto obj = iter.second;
+      if (obj->GetID() != major_object_->GetID()) {
+        if (major_object_->CollideWith(obj)) {
+          collision = true;
+          break;
+        }
+      }
+    }
+    if (collision) {
+      camera_->move(-dir, time_elapsed);
+    }
+    dir = 0.5f * dir;
+  }
+  if (collision) {
+    camera_->move(-dir * 2, time_elapsed);
+  }
+  // emit ValueChanged();
+}
+
+void GLScene::MouseCallBack(float xoffset, float yoffset, float scroll_offset, float time_elapsed) {
+  camera_->MouseCallback(xoffset, yoffset, scroll_offset, time_elapsed);
 }

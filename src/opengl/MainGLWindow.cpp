@@ -56,13 +56,16 @@ void MainGLWindow::paintGL() {
   // qDebug() << num << ' ' << QDateTime::currentMSecsSinceEpoch();
   time_elapsed_ = time_.nsecsElapsed();
   auto camera = scene_->GetCamera();
-  emit UpdateInfo(time_elapsed_, QString("frame %1 position (%2, %3, %4) pitch %5 yaw %6")
+  QVector3D v(scene_->GetObjects()[2]->boundingbox_.GetMinPoint());
+  QMatrix4x4 m(scene_->GetObjects()[2]->transform_.GetModelMatrix());
+  emit UpdateInfo(time_elapsed_, QString("frame %1 position (%2, %3, %4) pitch %5 yaw %6 debug %7")
                                      .arg(num)
                                      .arg(camera->GetPosition().x(), 0, 'f', 2)
                                      .arg(camera->GetPosition().y(), 0, 'f', 2)
                                      .arg(camera->GetPosition().z(), 0, 'f', 2)
                                      .arg(camera->GetAngles().x(), 0, 'f', 3)
                                      .arg(camera->GetAngles().y(), 0, 'f', 3)
+                                     .arg((m * QVector4D(v, 1.0f)).x())
                                      .toUtf8());
   time_.restart();
 
@@ -70,10 +73,10 @@ void MainGLWindow::paintGL() {
 
   // process io
   for (auto &key : keys_) {
-    camera->KeyboardCallback(key, time_elapsed_ / 1e9);
+    scene_->KeyboardCallback(key, time_elapsed_ / 1e9);
   }
   if ((mouse_captured_ && (mouse_move_delta_.x() != 0 || mouse_move_delta_.y() != 0)) || mouse_scroll_delta_ != 0) {
-    camera->MouseCallback(mouse_move_delta_.x(), mouse_move_delta_.y(), mouse_scroll_delta_, time_elapsed_ / 1e9);
+    scene_->MouseCallBack(mouse_move_delta_.x(), mouse_move_delta_.y(), mouse_scroll_delta_, time_elapsed_ / 1e9);
     mouse_move_delta_ = {0, 0};
     mouse_scroll_delta_ = 0;
   }

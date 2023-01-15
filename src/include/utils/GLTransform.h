@@ -13,6 +13,7 @@
  * 物体的位置变换
  * @note 对外接口使用欧拉角，内部使用四元数
  */
+
 struct GLTransform {
   QVector3D position_{0.0f, 0.0f, 0.0f};
   float pitch_{0.0f}, yaw_{0.0f}, roll_{0.0f};

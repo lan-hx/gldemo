@@ -65,6 +65,9 @@ class GLScene : public QObject {
   void Draw();
   void Update() { Draw(); }
 
+  void KeyboardCallback(Qt::Key key, float time_elapsed);
+  void MouseCallBack(float xoffset, float yoffset, float scroll_offset, float time_elapsed);
+
  public:
   static constexpr auto DEFAULT_MODELS = {
       // obj path | texture path | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
@@ -75,11 +78,15 @@ class GLScene : public QObject {
   };
   static constexpr auto DEFAULT_OBJECTS = {
       // model | position | rotation | scale
-      std::make_tuple(":/model/sphere.obj", QVector3D{0.0f, 0.0f, 3.0f}, QVector3D{0.0f, 0.0f, 0.0f},
+      std::make_tuple(":/model/sphere.obj", QVector3D{0.0f, 2.0f, 0.0f}, QVector3D{0.0f, 0.0f, 0.0f},
                       QVector3D{0.2f, 0.2f, 0.2f}),
       std::make_tuple(":/model/cube.obj", QVector3D{0.0f, 0.0f, 0.0f}, QVector3D{0.0f, 0.0f, 0.0f},
+                      QVector3D{100.0f, 1.0f, 100.0f}),
+      std::make_tuple(":/model/cube.obj", QVector3D{1.0f, 1.0f, 0.0f}, QVector3D{0.0f, 0.0f, 0.0f},
                       QVector3D{1.0f, 1.0f, 1.0f}),
-      std::make_tuple(":/model/cube.obj", QVector3D{3.0f, 3.0f, 0.0f}, QVector3D{0.0f, 0.0f, 0.0f},
+      std::make_tuple(":/model/cube.obj", QVector3D{2.0f, 1.0f, 2.0f}, QVector3D{0.0f, 0.0f, 0.0f},
+                      QVector3D{1.0f, 1.0f, 1.0f}),
+      std::make_tuple(":/model/cube.obj", QVector3D{3.0f, 1.0f, -1.0f}, QVector3D{0.0f, 0.0f, 0.0f},
                       QVector3D{1.0f, 1.0f, 1.0f}),
   };
 };

@@ -9,6 +9,8 @@
 #include <QObject>
 #include <QVector3D>
 
+#include "opengl/GLObject.h"
+
 constexpr double PI = 3.14159265358979323846;
 
 class CameraSettings;
@@ -42,6 +44,8 @@ class GLCamera : public QObject {
   float &fovy_ = zoom_;
   float aspect_;
   float znear_ = 0.1f, zfar_ = 100.0f;
+
+  GLObject *bind_object_ = nullptr;
 
  public:
   /**
@@ -116,6 +120,10 @@ class GLCamera : public QObject {
    * @note 看情况，可能会变接口
    */
   void MouseCallback(float xoffset, float yoffset, float scroll_offset, float time_elapsed);
+
+  void bind_object(GLObject *obj);
+
+  void move(QVector3D dir, float time_elapsed);
 
  private:
   inline void SetParameters(QVector3D position, float pitch, float yaw, float zoom) {

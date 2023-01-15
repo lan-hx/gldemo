@@ -7,7 +7,7 @@
 #include <QVector3D>
 
 inline float dot(const QVector3D &v1, const QVector3D& v2){
-    return v1.x() * v2.x() + v1.y() * v2.y() + v1.z() * v2.z();
+    return QVector3D::dotProduct(v1, v2);
 }
 
 struct Plane {
@@ -22,7 +22,7 @@ public:
 		  signed_distance_{ -dot(point, this->normal_) } { }
 
 	float getSignedDistanceToPoint(QVector3D point) const {
-		return dot(normal_, point) + signed_distance_;
+		return -dot(normal_, point) - signed_distance_;
 	}
 };
 

@@ -44,13 +44,21 @@ bool GLObject::CollideWith(const GLObject *obj) {
       Plane p4(max_p, QVector3D::crossProduct(y_dir, x_dir));
       Plane p5(max_p, QVector3D::crossProduct(z_dir, y_dir));
       Plane p6(max_p, QVector3D::crossProduct(x_dir, z_dir));
+      float dis1sq = pow(std::max(p1.getSignedDistanceToPoint(center), 0.0f), 2);
+      float dis2sq = pow(std::max(p2.getSignedDistanceToPoint(center), 0.0f), 2);
+      float dis3sq = pow(std::max(p3.getSignedDistanceToPoint(center), 0.0f), 2);
+      float dis4sq = pow(std::max(p4.getSignedDistanceToPoint(center), 0.0f), 2);
+      float dis5sq = pow(std::max(p5.getSignedDistanceToPoint(center), 0.0f), 2);
+      float dis6sq = pow(std::max(p6.getSignedDistanceToPoint(center), 0.0f), 2);
+
+      // qDebug<< obj->GetID()<< " "<< dis2sq<< " "<< dis5sq<< "\n";
       float dis = sqrt(pow(std::max(p1.getSignedDistanceToPoint(center), 0.0f), 2) +
                        pow(std::max(p2.getSignedDistanceToPoint(center), 0.0f), 2) +
                        pow(std::max(p3.getSignedDistanceToPoint(center), 0.0f), 2) +
                        pow(std::max(p4.getSignedDistanceToPoint(center), 0.0f), 2) +
                        pow(std::max(p5.getSignedDistanceToPoint(center), 0.0f), 2) +
                        pow(std::max(p6.getSignedDistanceToPoint(center), 0.0f), 2));
-      return dis > radius;
+      return dis < radius;
     }
   }
   return false;
