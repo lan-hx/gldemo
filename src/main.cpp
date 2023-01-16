@@ -1,4 +1,5 @@
 #include <QApplication>
+#include <QMessageBox>
 #include <QOpenGLContext>
 #include <QSurfaceFormat>
 
@@ -18,8 +19,9 @@ int main(int argc, char *argv[]) {
   fmt.setDepthBufferSize(24);
   // enable double buffer
   fmt.setSwapBehavior(QSurfaceFormat::DoubleBuffer);
-  // enable vsync
-  fmt.setSwapInterval(1);
+  auto ret = QMessageBox::information(nullptr, "垂直同步", "是否开启垂直同步？", QMessageBox::Yes | QMessageBox::No);
+  // vsync
+  fmt.setSwapInterval((ret & QMessageBox::Yes) != 0 ? 1 : 0);
 
   // Request OpenGL 3.3 core or OpenGL ES 3.0.
   if (QOpenGLContext::openGLModuleType() == QOpenGLContext::LibGL) {

@@ -5,7 +5,6 @@
 #include "include/opengl/GLScene.h"
 
 #include <QOpenGLExtraFunctions>
-#include <fstream>
 
 #include "fs_light_frag.h"
 #include "vs_light_vert.h"
@@ -22,21 +21,18 @@ void GLScene::Initialize(const std::vector<std::pair<std::string, std::string>> 
   // initialize shader program
   delete shader_;
   shader_ = new QOpenGLShaderProgram;
-  ofstream f_compile("compile.log");
-  f_compile << "compile log begin..." << endl;
   if (!shader_->addShaderFromSourceCode(QOpenGLShader::Vertex, vs_light_vert)) {
-    f_compile << "Vert shader compile failed:\n" << shader_->log().toStdString() << endl;
     throw std::runtime_error(shader_->log().toStdString());
   }
+  qDebug() << "[INFO] GLScene::Initialize: build vertex shader log: " << shader_->log();
   if (!shader_->addShaderFromSourceCode(QOpenGLShader::Fragment, fs_light_frag)) {
-    f_compile << "Frag shader compile failed:\n" << shader_->log().toStdString() << endl;
     throw std::runtime_error(shader_->log().toStdString());
   }
+  qDebug() << "[INFO] GLScene::Initialize: build frag shader log: " << shader_->log();
   if (!shader_->link()) {
-    f_compile << "link failed:\n" << shader_->log().toStdString() << endl;
     throw std::runtime_error(shader_->log().toStdString());
   }
-  f_compile.close();
+  qDebug() << "[INFO] GLScene::Initialize: link shader log: " << shader_->log();
 
   // load models
   if (models.empty()) {
@@ -59,6 +55,7 @@ void GLScene::Initialize(const std::vector<std::pair<std::string, std::string>> 
     AddObject(obj);
   }
 
+  lights_->CheckOffsets(shader_);
   lights_->SetupShader(shader_, "Lights");
   AddLight(GLLights::AddAmbientLight({1.0f, 1.0f, 1.0f}, 0.2f));
   AddLight(GLLights::AddSpotLight({0.0f, 0.0f, 1.0f}, {0.0f, 0.0f, -1.0f}, {1.0f, 1.0f, 1.0f}, 1.0f, 1.047198f, 1.0f,

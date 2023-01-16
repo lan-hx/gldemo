@@ -93,6 +93,29 @@ ModelSettings::ModelSettings(GLScene *scene, QOpenGLWidget *widget, QWidget *par
     }
     widget_->doneCurrent();
   });
+  connect(ui->save_model_select, &QToolButton::clicked, [&]() {
+    auto file_name = QFileDialog::getSaveFileName(this, tr("保存模型"), tr(""), tr("Model(*.obj)"));
+    if (!file_name.isEmpty()) {
+      ui->save_path->setText(file_name);
+    }
+  });
+  connect(ui->save_button, &QPushButton::clicked, [&]() {
+    auto path = ui->save_path->text();
+    if (path.isEmpty()) {
+      QMessageBox::critical(this, tr("模型保存失败"), tr("没有指定模型路径"));
+      return;
+    }
+    if (current_path_.empty()) {
+      QMessageBox::critical(this, tr("模型保存失败"), tr("当前未选择模型"));
+      return;
+    }
+    auto model = models_.at(current_path_);
+    if (model->SaveObj(path.toStdString())) {
+      QMessageBox::information(this, tr("保存成功"), tr("保存成功"));
+    } else {
+      QMessageBox::critical(this, tr("保存失败"), tr("保存失败，详见cerr输出。"));
+    }
+  });
   connect(ui->texture_select, &QToolButton::clicked, [&]() {
     auto file_name = QFileDialog::getOpenFileName(this, tr("打开贴图"), tr(""), tr("Images(*.png *.jpg)"));
     if (!file_name.isEmpty()) {
