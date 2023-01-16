@@ -82,7 +82,6 @@ void GLCamera::bind_object(GLObject *obj) { bind_object_ = obj; }
 void GLCamera::move(QVector3D dir, float time_elapsed) {
   QVector3D displacement = movement_speed_ * time_elapsed * dir;
   bind_object_->transform_.position_ += displacement;
-  // position_ += displacement;
   position_ = bind_object_->transform_.position_ - 2.0 * front_;
   emit ValueChanged();
 }

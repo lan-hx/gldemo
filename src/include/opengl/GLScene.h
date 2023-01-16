@@ -70,24 +70,24 @@ class GLScene : public QObject {
 
  public:
   static constexpr auto DEFAULT_MODELS = {
-      // obj path | texture path | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+      // obj path | texture path |
       std::make_tuple(":/model/cube.obj", ":/texture/wall.jpg"),
       std::make_tuple(":/model/sphere.obj", ""),
       std::make_tuple(":/model/bunny.obj", ""),
       std::make_tuple(":/model/rose.obj", ""),
   };
   static constexpr auto DEFAULT_OBJECTS = {
-      // model | position | rotation | scale
+      // model | position | rotation | scale | boundingbox_type
       std::make_tuple(":/model/sphere.obj", QVector3D{0.0f, 2.0f, 0.0f}, QVector3D{0.0f, 0.0f, 0.0f},
-                      QVector3D{0.2f, 0.2f, 0.2f}),
+                      QVector3D{0.2f, 0.2f, 0.2f}, GLBoundingbox::BoundingboxType::SPHERE_BOUNDINGBOX),
       std::make_tuple(":/model/cube.obj", QVector3D{0.0f, 0.0f, 0.0f}, QVector3D{0.0f, 0.0f, 0.0f},
-                      QVector3D{100.0f, 1.0f, 100.0f}),
+                      QVector3D{100.0f, 1.0f, 100.0f}, GLBoundingbox::BoundingboxType::CUBE_BOUNDINGBOX),
       std::make_tuple(":/model/cube.obj", QVector3D{1.0f, 1.0f, 0.0f}, QVector3D{0.0f, 0.0f, 0.0f},
-                      QVector3D{1.0f, 1.0f, 1.0f}),
+                      QVector3D{1.0f, 1.0f, 1.0f}, GLBoundingbox::BoundingboxType::CUBE_BOUNDINGBOX),
       std::make_tuple(":/model/cube.obj", QVector3D{2.0f, 1.0f, 2.0f}, QVector3D{0.0f, 0.0f, 0.0f},
-                      QVector3D{1.0f, 1.0f, 1.0f}),
+                      QVector3D{1.0f, 1.0f, 1.0f}, GLBoundingbox::BoundingboxType::CUBE_BOUNDINGBOX),
       std::make_tuple(":/model/cube.obj", QVector3D{3.0f, 1.0f, -1.0f}, QVector3D{0.0f, 0.0f, 0.0f},
-                      QVector3D{1.0f, 1.0f, 1.0f}),
+                      QVector3D{1.0f, 1.0f, 1.0f}, GLBoundingbox::BoundingboxType::CUBE_BOUNDINGBOX),
   };
 };
 

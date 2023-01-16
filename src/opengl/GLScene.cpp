@@ -49,7 +49,7 @@ void GLScene::Initialize(const std::vector<std::pair<std::string, std::string>> 
   bool major_loaded = false;
   for (const auto &dobj : DEFAULT_OBJECTS) {
     auto pmodel = GetModel(get<0>(dobj));
-    auto obj = new GLObject(pmodel, shader_, !major_loaded);
+    auto obj = new GLObject(pmodel, shader_, get<4>(dobj));
     if (!major_loaded) {
       major_loaded = true;
       major_object_ = obj;
@@ -150,7 +150,7 @@ void GLScene::KeyboardCallback(Qt::Key key, float time_elapsed) {
     dir = 0.5f * dir;
   }
   if (collision) {
-    camera_->move(-dir * 2, time_elapsed);
+    camera_->move(-dir * 2, time_elapsed);  // 防止float误差导致物体被卡
   }
   // emit ValueChanged();
 }

@@ -47,10 +47,10 @@ class GLBoundingbox {
     }
     if (type_ == SPHERE_BOUNDINGBOX) {
       a.setX(0.0f), a.setY(0.0f), a.setZ(0.0f);
-      //   for (auto vertex = vertices.begin(); vertex != vertices.end(); ++vertex) {
-      //     a += QVector3D(vertex->position_[0] / vertices.size(), vertex->position_[1] / vertices.size(),
-      //                    vertex->position_[2] / vertices.size());
-      //   }
+      for (auto vertex = vertices.begin(); vertex != vertices.end(); ++vertex) {
+        a += QVector3D(vertex->position_[0] / vertices.size(), vertex->position_[1] / vertices.size(),
+                       vertex->position_[2] / vertices.size());
+      }
 
       for (auto vertex = vertices.begin(); vertex != vertices.end(); ++vertex) {
         QVector3D p(vertex->position_[0], vertex->position_[1], vertex->position_[2]);
