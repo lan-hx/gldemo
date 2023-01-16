@@ -32,12 +32,12 @@ bool GLModel::LoadObj(const string &path) {
 
   if (!reader_.ParseFromString(obj_file.readAll().toStdString(), "")) {
     if (!reader_.Error().empty()) {
-      cerr << "[ERROR] TinyObjReader: " << reader_.Error();
+      cerr << "[ERROR] load \"" << path << "\" TinyObjReader: " << reader_.Error() << flush;
     }
     return false;
   }
   if (!reader_.Warning().empty()) {
-    std::cout << "[WARNING] TinyObjReader: " << reader_.Warning();
+    std::cout << "[WARNING] load \"" << path << "\" TinyObjReader: " << reader_.Warning() << flush;
   }
   obj_file.close();
 
@@ -115,7 +115,6 @@ void GLModel::SetupVao(QOpenGLShaderProgram *shader) {
   if (vao_->create()) {
     vao_->bind();
   }
-  cerr << path_ << ": " << vao_->objectId() << endl;
   shader->bind();
   vbo_ = new QOpenGLBuffer;
   vbo_->create();
@@ -169,4 +168,87 @@ void GLModel::SetMaterial(QOpenGLShaderProgram *shader) {
   shader->setUniformValue("material.ks", materials_[0].ks_);
   shader->setUniformValue("material.ns", materials_[0].ns_);
   shader->release();
+}
+bool GLModel::SaveObj(const string &path) {
+  auto &attributes = reader_.GetAttrib();
+  auto &shapes = reader_.GetShapes();
+
+  FILE *fp = fopen(path.c_str(), "w");
+  if (fp == nullptr) {
+    fprintf(stderr, "[ERROR] GLModel::SaveObj: Failed to open file \"%s\" for write.\n", path.c_str());
+    return false;
+  }
+
+  // facevarying vtx
+  for (size_t k = 0; k < attributes.vertices.size(); k += 3) {
+    fprintf(fp, "v %f %f %f\n", attributes.vertices[k + 0], attributes.vertices[k + 1], attributes.vertices[k + 2]);
+  }
+
+  fprintf(fp, "\n");
+
+  // facevarying normal
+  for (size_t k = 0; k < attributes.normals.size(); k += 3) {
+    fprintf(fp, "vn %f %f %f\n", attributes.normals[k + 0], attributes.normals[k + 1], attributes.normals[k + 2]);
+  }
+
+  fprintf(fp, "\n");
+
+  // facevarying texcoord
+  for (size_t k = 0; k < attributes.texcoords.size(); k += 2) {
+    fprintf(fp, "vt %f %f\n", attributes.texcoords[k + 0], attributes.texcoords[k + 1]);
+  }
+
+  for (size_t i = 0; i < shapes.size(); i++) {
+    fprintf(fp, "\n");
+
+    if (shapes[i].name.empty()) {
+      fprintf(fp, "g Unknown\n");
+    } else {
+      fprintf(fp, "g %s\n", shapes[i].name.c_str());
+    }
+
+    bool has_vn = false;
+    bool has_vt = false;
+    // Assumes normals and textures are set shape-wise.
+    if (shapes[i].mesh.indices.size() > 0) {
+      has_vn = shapes[i].mesh.indices[0].normal_index != -1;
+      has_vt = shapes[i].mesh.indices[0].texcoord_index != -1;
+    }
+
+    // face
+    int face_index = 0;
+    for (size_t k = 0; k < shapes[i].mesh.indices.size(); k += shapes[i].mesh.num_face_vertices[face_index++]) {
+      unsigned char v_per_f = shapes[i].mesh.num_face_vertices[face_index];
+      // Imperformant, but if you want to have variable vertices per face, you need some kind of a dynamic loop.
+      fprintf(fp, "f");
+      for (int l = 0; l < v_per_f; l++) {
+        const tinyobj::index_t &ref = shapes[i].mesh.indices[k + l];
+        if (has_vn && has_vt) {
+          // v0/t0/vn0
+          fprintf(fp, " %d/%d/%d", ref.vertex_index + 1, ref.texcoord_index + 1, ref.normal_index + 1);
+          continue;
+        }
+        if (has_vn && !has_vt) {
+          // v0//vn0
+          fprintf(fp, " %d//%d", ref.vertex_index + 1, ref.normal_index + 1);
+          continue;
+        }
+        if (!has_vn && has_vt) {
+          // v0/vt0
+          fprintf(fp, " %d/%d", ref.vertex_index + 1, ref.texcoord_index + 1);
+          continue;
+        }
+        if (!has_vn && !has_vt) {
+          // v0 v1 v2
+          fprintf(fp, " %d", ref.vertex_index + 1);
+          continue;
+        }
+      }
+      fprintf(fp, "\n");
+    }
+  }
+
+  fclose(fp);
+
+  return true;
 }
